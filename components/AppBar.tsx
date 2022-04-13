@@ -24,6 +24,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { ReactNode } from 'react'
+import { useRouter } from 'next/router'
 
 const Links = ['Blog', 'Tags', 'About']
 
@@ -45,6 +46,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 export default function AppBar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
+  const router = useRouter()
 
   return (
     <>
@@ -64,6 +66,8 @@ export default function AppBar() {
               p={2}
               borderRadius={14}
               fontWeight={'bold'}
+              cursor={'pointer'}
+              onClick={() => router.push('/')}
             >
               DevDiary
             </Box>
@@ -87,6 +91,7 @@ export default function AppBar() {
               size={'sm'}
               mr={4}
               leftIcon={<AddIcon />}
+              onClick={() => router.push('/create-post')}
             >
               Create Post
             </Button>

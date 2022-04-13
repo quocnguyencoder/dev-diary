@@ -30,6 +30,9 @@
       ],
       "@/contexts/*": [
         "contexts/*"
+      ],
+      "@/helpers/*": [
+        "helpers/*"
       ]
     }
   },

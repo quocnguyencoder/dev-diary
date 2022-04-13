@@ -31,10 +31,7 @@ const BlogItem = ({ post }: Props) => {
           justifyContent="center"
           marginTop={{ base: '3', sm: '0' }}
         >
-          <BlogAuthor
-            name={`author._source.displayName`}
-            date={post._source.publishedAt}
-          />
+          <BlogAuthor name={`Author's name`} date={post._source.publishedAt} />
           <Heading marginTop="1">
             <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
               {post._source.title}

@@ -1,6 +1,6 @@
 import { Client } from '@elastic/elasticsearch'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Post } from '@/interfaces/Post'
+import { Post, PostSource } from '@/interfaces/Post'
 
 type Message = {
   content: string
@@ -61,20 +61,34 @@ export default function handler(
   //   comments: [],
   // }
 
-  // const createIndex = async () =>
-  //   client.index({ index: 'posts', document: samplePost })
+  const createIndex = async (data: PostSource) =>
+    client.index({ index: 'posts', document: data })
 
   return new Promise<void>((resolve) => {
-    getData()
-      .then((data) => {
-        res.status(200).json(data)
-        return resolve()
-      })
-      .catch((err) => {
-        console.error(err.message)
-        res.status(500).end()
-        return resolve()
-      })
+    if (req.method === 'GET') {
+      getData()
+        .then((data) => {
+          res.status(200).json(data)
+          return resolve()
+        })
+        .catch((err) => {
+          console.error(err.message)
+          res.status(500).end()
+          return resolve()
+        })
+    } else if (req.method === 'PUT') {
+      const data = req.body.data as PostSource
+      createIndex(data)
+        .then(() => {
+          res.status(201).json({ content: 'Created' })
+          return resolve()
+        })
+        .catch((err) => {
+          console.error(err.message)
+          res.status(500).end()
+          return resolve()
+        })
+    }
   })
   // return new Promise<void>((resolve) => {
   //   createIndex()
