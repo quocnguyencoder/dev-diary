@@ -23,8 +23,8 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react'
-import { ReactNode } from 'react'
 import { useRouter } from 'next/router'
+import { ReactNode } from 'react'
 
 const Links = ['Blog', 'Tags', 'About']
 
