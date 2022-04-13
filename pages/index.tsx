@@ -21,9 +21,7 @@ const Home = ({ latestPosts }: Props) => {
 export default Home
 
 export async function getStaticProps() {
-  const res = await fetch(
-    'https://dev-diary-p15qrpoov-quocnguyen612k.vercel.app/api/posts',
-  )
+  const res = await fetch('http://localhost:3000/api/posts')
   const latestPosts = (await res.json()) as Post[]
 
   return {
