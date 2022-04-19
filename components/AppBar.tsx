@@ -50,7 +50,7 @@ export default function AppBar() {
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box bg={useColorModeValue('white', 'gray.900')} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -61,8 +61,8 @@ export default function AppBar() {
           />
           <HStack spacing={8} alignItems={'center'}>
             <Box
-              bgColor={'teal'}
-              color={'white'}
+              bgColor={useColorModeValue('teal.500', 'teal.300')}
+              color={useColorModeValue('white', 'black')}
               p={2}
               borderRadius={14}
               fontWeight={'bold'}

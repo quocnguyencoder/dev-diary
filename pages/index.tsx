@@ -1,6 +1,4 @@
-import AppBar from '@/components/AppBar'
 import BlogList from '@/components/BlogList'
-import SmallFooterWithSocial from '@/components/Footer'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
 import getLatestPosts from '@/services/getData'
@@ -12,9 +10,7 @@ interface Props {
 const Home = ({ latestPosts }: Props) => {
   return (
     <HomeContext.Provider value={{ latestPosts }}>
-      <AppBar />
       <BlogList />
-      <SmallFooterWithSocial />
     </HomeContext.Provider>
   )
 }

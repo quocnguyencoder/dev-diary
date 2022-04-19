@@ -19,6 +19,9 @@
       "@/components/*": [
         "components/*"
       ],
+      "@/constants/*": [
+        "constants/*"
+      ],
       "@/interfaces/*": [
         "interfaces/*"
       ],

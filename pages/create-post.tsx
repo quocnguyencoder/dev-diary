@@ -26,7 +26,6 @@ import {
   BiListUl,
 } from 'react-icons/bi'
 import { ImQuotesLeft } from 'react-icons/im'
-import AppBar from '@/components/AppBar'
 import toSpinalCase from '@/helpers/toSpinalCase'
 import { PostSource } from '@/interfaces/Post'
 
@@ -62,7 +61,7 @@ const CreatePost = () => {
       content: content,
       description: title,
       published: true,
-      publishedAt: moment().format('L'),
+      publishedAt: moment().format('L'), //todo: change to iso format
       createdAt: moment().format('L'),
       comments: [],
     }
@@ -76,6 +75,7 @@ const CreatePost = () => {
 
     const response = await sendData
     if (response.status === 201) {
+      alert(response.body)
       router.push('/')
     } else {
       alert('Something went wrong')
@@ -84,7 +84,6 @@ const CreatePost = () => {
 
   return (
     <>
-      <AppBar />
       <Container maxW="container.lg">
         <Box
           bgColor={'gray.100'}
