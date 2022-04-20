@@ -1,4 +1,5 @@
 import { compare } from 'bcrypt'
+import cookie from 'cookie'
 import { sign } from 'jsonwebtoken'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { UserSource } from '@/interfaces/User'
@@ -37,7 +38,21 @@ export default async function handler(
                   const jwt = sign(claims, process.env.JWT_SECRET_KEY || '', {
                     expiresIn: '12h',
                   })
-                  return res.status(200).json({ authToken: jwt })
+                  res.setHeader(
+                    'Set-Cookie',
+                    cookie.serialize('auth', jwt, {
+                      httpOnly: true,
+                      secure: process.env.NODE_ENV !== 'development',
+                      sameSite: 'strict',
+                      maxAge: 3600,
+                      path: '/',
+                    }),
+                  )
+                  return res
+                    .status(200)
+                    .json({
+                      content: `Welcome,${userData._source.displayName}`,
+                    })
                 } else {
                   return res.status(401).json({ content: 'login failed' })
                 }

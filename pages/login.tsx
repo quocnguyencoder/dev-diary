@@ -12,8 +12,34 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 const Login = () => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const router = useRouter()
+
+  const handleLogin = async () => {
+    const sendData = await fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify({ username: username, password: password }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const response = await sendData
+    if (response.status === 200) {
+      const json = await response.json()
+      alert(json.content)
+      router.push('/')
+    } else {
+      //console.log(response.status)
+      alert('Sign in failed, please try again')
+    }
+  }
+
   return (
     <Flex
       minH={'100vh'}
@@ -35,13 +61,19 @@ const Login = () => {
           p={8}
         >
           <Stack spacing={4}>
-            <FormControl id="email">
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+            <FormControl id="username">
+              <FormLabel>Username</FormLabel>
+              <Input
+                type="text"
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
+              <Input
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </FormControl>
             <Stack spacing={10}>
               <Stack
@@ -58,6 +90,7 @@ const Login = () => {
                 _hover={{
                   bg: 'blue.500',
                 }}
+                onClick={() => handleLogin()}
               >
                 Sign in
               </Button>

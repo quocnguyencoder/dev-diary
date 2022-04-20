@@ -17,13 +17,14 @@ const authenticated =
       const authToken = req.headers.authorization
       const secret = process.env.JWT_SECRET_KEY
       if (authToken !== undefined && secret !== undefined) {
-        verify(authToken, secret, async (err, decoded) => {
+        verify(req.cookies.auth, secret, async (err, decoded) => {
           if (!err && decoded) {
             return await fn(req, res)
           }
         })
+      } else {
+        return res.status(401).json({ content: 'request failed' })
       }
-      return res.status(401).json({ content: 'request failed' })
     } else {
       return await fn(req, res)
     }
