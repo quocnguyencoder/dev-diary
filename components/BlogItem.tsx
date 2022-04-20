@@ -1,4 +1,5 @@
 import { Box, Heading, Link, Text, useColorModeValue } from '@chakra-ui/react'
+import NextLink from 'next/link'
 import React from 'react'
 import BlogAuthor from './BlogAuthor'
 import BlogTags from './BlogTags'
@@ -35,9 +36,11 @@ const BlogItem = ({ post }: Props) => {
             id={post._source.authorID}
           />
           <Heading marginTop="1">
-            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-              {post._source.title}
-            </Link>
+            <NextLink href={`/quoc/${post._source.slug}`} passHref>
+              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
+                {post._source.title}
+              </Link>
+            </NextLink>
           </Heading>
           <BlogTags tags={post._source.tags} />
           <Text

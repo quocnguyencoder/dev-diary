@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { Post, PostSource } from '@/interfaces/Post'
-import { getLatestPosts } from '@/services/getData'
+import { getPostBySlug } from '@/services/getData'
 import createPost from '@/services/putData'
 
 type Message = {
@@ -17,8 +17,8 @@ export default async function handler(
     switch (method) {
       case 'GET': {
         //const dataQuery = query === 'latest' ? {-- elastic query --}
-        const data = await getLatestPosts()
-        //const data = await getPostBySlug(`sample-post-1`)
+        //const data = await getLatestPosts()
+        const data = await getPostBySlug(`sample-post-1`)
         return res.status(200).json(data)
       }
       case 'PUT': {

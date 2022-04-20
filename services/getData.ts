@@ -11,4 +11,22 @@ const getLatestPosts = async () => {
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
 
-export default getLatestPosts
+const getPostBySlug = async (slug: string) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        must: [
+          {
+            match: {
+              slug: `${slug}`,
+            },
+          },
+        ],
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits[0])) as Post
+}
+
+export { getLatestPosts, getPostBySlug }
