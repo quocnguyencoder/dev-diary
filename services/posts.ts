@@ -1,5 +1,5 @@
 import client from './client'
-import { Post } from '@/interfaces/Post'
+import { Post, PostSource } from '@/interfaces/Post'
 
 const getLatestPosts = async () => {
   const result = await client.search<Document>({
@@ -29,4 +29,7 @@ const getPostBySlug = async (slug: string) => {
   return JSON.parse(JSON.stringify(result.hits.hits[0])) as Post
 }
 
-export { getLatestPosts, getPostBySlug }
+const createPost = async (data: PostSource) =>
+  client.index({ index: 'posts', document: data })
+
+export { getLatestPosts, getPostBySlug, createPost }

@@ -1,13 +1,35 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { verify } from 'jsonwebtoken'
+import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { Post, PostSource } from '@/interfaces/Post'
-import { getLatestPosts } from '@/services/getData'
-import createPost from '@/services/putData'
+import { createPost, getLatestPosts } from '@/services/posts'
 
 type Message = {
   content: string
 }
 
-export default async function handler(
+const authenticated =
+  (fn: NextApiHandler) =>
+  async (
+    req: NextApiRequest,
+    res: NextApiResponse<Message | Post[] | Post>,
+  ) => {
+    if (req.method === 'PUT') {
+      const authToken = req.headers.authorization
+      const secret = process.env.JWT_SECRET_KEY
+      if (authToken !== undefined && secret !== undefined) {
+        verify(authToken, secret, async (err, decoded) => {
+          if (!err && decoded) {
+            return await fn(req, res)
+          }
+        })
+      }
+      return res.status(401).json({ content: 'request failed' })
+    } else {
+      return await fn(req, res)
+    }
+  }
+
+export default authenticated(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Message | Post[] | Post>,
 ) {
@@ -32,4 +54,4 @@ export default async function handler(
     // for debug only
     return res.status(500).json({ content: `${err}` })
   }
-}
+})

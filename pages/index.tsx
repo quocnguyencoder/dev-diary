@@ -1,7 +1,7 @@
 import BlogList from '@/components/BlogList'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
-import { getLatestPosts } from '@/services/getData'
+import { getLatestPosts } from '@/services/posts'
 
 interface Props {
   latestPosts: Post[]

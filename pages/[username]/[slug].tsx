@@ -14,7 +14,7 @@ import remarkGfm from 'remark-gfm'
 import BlogAuthor from '@/components/BlogAuthor'
 import BlogTags from '@/components/BlogTags'
 import { Post } from '@/interfaces/Post'
-import { getPostBySlug } from '@/services/getData'
+import { getPostBySlug } from '@/services/posts'
 
 interface Props {
   postContent: Post
