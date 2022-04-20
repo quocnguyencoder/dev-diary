@@ -38,7 +38,7 @@ const CreatePost = () => {
 
   const handleInputTag = (key: string) => {
     if (key === ' ' && tags.length <= 4) {
-      setTags([...tags, tagInput])
+      setTags([...tags, tagInput.trim()])
       setTagInput('')
     }
   }
@@ -51,7 +51,7 @@ const CreatePost = () => {
 
   const handleCreatePost = async () => {
     const postContent: PostSource = {
-      authorID: '123123123',
+      authorID: '8sJqRoAB_KwOI5m5lqab',
       title: title,
       metaTitle: title,
       slug: toSpinalCase(title),
@@ -61,8 +61,8 @@ const CreatePost = () => {
       content: content,
       description: title,
       published: true,
-      publishedAt: moment().format('L'), //todo: change to iso format
-      createdAt: moment().format('L'),
+      publishedAt: moment().toISOString(),
+      createdAt: moment().toISOString(),
       comments: [],
     }
     const sendData = await fetch('/api/posts', {
@@ -75,7 +75,7 @@ const CreatePost = () => {
 
     const response = await sendData
     if (response.status === 201) {
-      alert(response.body)
+      //alert(response.body)
       router.push('/')
     } else {
       alert('Something went wrong')

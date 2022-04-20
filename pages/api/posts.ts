@@ -13,7 +13,7 @@ const authenticated =
     req: NextApiRequest,
     res: NextApiResponse<Message | Post[] | Post>,
   ) => {
-    if (req.method === 'PUT') {
+    if (req.method === 'POST') {
       const authToken = req.headers.authorization
       const secret = process.env.JWT_SECRET_KEY
       if (authToken !== undefined && secret !== undefined) {

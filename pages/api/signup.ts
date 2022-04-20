@@ -20,22 +20,31 @@ export default async function handler(
         // TODO: make data validate function
         const isDataValidated = data.username !== undefined
         if (isDataValidated) {
-          const isUserExist = await checkUserExists(data.username)
+          let isUserExist
+          try {
+            isUserExist = await checkUserExists(data.username)
+          } catch {
+            isUserExist = false
+          }
           if (isUserExist) {
-            return res.status(409).json({ content: `username existed` })
+            return res.status(409).end()
           } else {
             // has password and stored data in to elastic search
             hash(data.password, 10, async (err, hash) => {
               if (!err) {
                 data.password = hash
-                const dbRes = await createUser(data)
-                return res.status(201).json({ content: `${dbRes}` })
+                await createUser(data)
+                return res.status(201).json({ content: 'OK' })
+              } else {
+                // case hash function somehow failed
+                return res.status(500).json({ content: `something went wrong` })
               }
             })
-            // case hash function somehow failed
-            return res.status(500).json({ content: `something went wrong` })
+            break
           }
-        } else return res.status(400).json({ content: `data not valid` })
+        } else {
+          return res.status(400).json({ content: `data not valid` })
+        }
       }
       default: {
         return res.status(405).json({ content: 'Method not supported' })

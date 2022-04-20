@@ -38,10 +38,12 @@ export default async function handler(
                     expiresIn: '12h',
                   })
                   return res.status(200).json({ authToken: jwt })
+                } else {
+                  return res.status(401).json({ content: 'login failed' })
                 }
               },
             )
-            return res.status(401).json({ content: 'login failed' })
+            break
           } else {
             return res.status(401).json({ content: 'login failed' })
           }

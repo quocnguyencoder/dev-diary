@@ -6,7 +6,7 @@ const createUser = async (data: UserSource) =>
 
 const queryByUsername = async (username: string) => {
   const result = await client.search<Document>({
-    index: 'posts',
+    index: 'users',
     query: {
       bool: {
         must: [
