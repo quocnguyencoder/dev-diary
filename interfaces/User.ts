@@ -5,6 +5,7 @@ export interface User {
 
 export interface UserSource {
   username: string
+  password: string
   email: string
   avatar: string
   displayName: string

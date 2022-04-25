@@ -19,12 +19,16 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  Text,
   useColorMode,
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react'
+import { signOut, useSession } from 'next-auth/react'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode } from 'react'
+import generateAvatar from '@/helpers/generateAvatar'
 
 const Links = ['Blog', 'Tags', 'About']
 
@@ -47,10 +51,11 @@ export default function AppBar() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
   const router = useRouter()
+  const { data: session } = useSession()
 
   return (
     <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+      <Box bg={useColorModeValue('white', 'gray.900')} px={20}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             size={'md'}
@@ -61,8 +66,8 @@ export default function AppBar() {
           />
           <HStack spacing={8} alignItems={'center'}>
             <Box
-              bgColor={'teal'}
-              color={'white'}
+              bgColor={useColorModeValue('teal.500', 'teal.300')}
+              color={useColorModeValue('white', 'black')}
               p={2}
               borderRadius={14}
               fontWeight={'bold'}
@@ -85,38 +90,58 @@ export default function AppBar() {
             <Button onClick={toggleColorMode} mr={4}>
               {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
             </Button>
-            <Button
-              variant={'solid'}
-              colorScheme={'teal'}
-              size={'sm'}
-              mr={4}
-              leftIcon={<AddIcon />}
-              onClick={() => router.push('/create-post')}
-            >
-              Create Post
-            </Button>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={'full'}
-                variant={'link'}
-                cursor={'pointer'}
-                minW={0}
-              >
-                <Avatar
+            {session ? (
+              <>
+                <Button
+                  variant={'solid'}
+                  colorScheme={'teal'}
                   size={'sm'}
-                  src={
-                    'https://mpng.subpng.com/20180403/tkw/kisspng-avatar-computer-icons-user-profile-business-user-avatar-5ac3a1f7d96614.9721182215227704238905.jpg'
-                  }
-                />
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
-              </MenuList>
-            </Menu>
+                  mr={4}
+                  leftIcon={<AddIcon />}
+                  onClick={() => router.push('/create-post')}
+                >
+                  Create Post
+                </Button>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rounded={'full'}
+                    variant={'link'}
+                    cursor={'pointer'}
+                    minW={0}
+                  >
+                    <Avatar size={'sm'} src={generateAvatar(`${session.id}`)} />
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem>
+                      <NextLink href="/" passHref>
+                        <Link>
+                          <Text>{`${session.displayName}`}</Text>
+                          <Text>{`@${session.username}`}</Text>
+                        </Link>
+                      </NextLink>
+                    </MenuItem>
+                    <MenuDivider />
+                    <MenuItem>Settings</MenuItem>
+                    <MenuDivider />
+                    <MenuItem onClick={() => signOut()}>Log out</MenuItem>
+                  </MenuList>
+                </Menu>
+              </>
+            ) : (
+              <HStack spacing={5}>
+                <Button variant="link">
+                  <NextLink href="/login" passHref>
+                    <Link>Log in</Link>
+                  </NextLink>
+                </Button>
+                <Button colorScheme="teal" variant="outline">
+                  <NextLink href="/signup" passHref>
+                    <Link>Create account</Link>
+                  </NextLink>
+                </Button>
+              </HStack>
+            )}
           </Flex>
         </Flex>
 

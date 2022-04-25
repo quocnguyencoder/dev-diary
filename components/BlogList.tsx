@@ -7,7 +7,7 @@ const BlogList = () => {
   const { latestPosts } = useHomeContext()
 
   return (
-    <Container maxW={'7xl'} p="12">
+    <Container maxW="container.md" pt="3" pb="3">
       <Heading as="h1">Latest</Heading>
       {latestPosts.map((post) => (
         <BlogItem key={`latest-${post._id}`} post={post} />
