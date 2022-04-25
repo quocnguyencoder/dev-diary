@@ -18,15 +18,15 @@ export default async function handler(
       case 'POST': {
         const data = req.body.data as UserSource
         // TODO: make data validate function
-        const isDataValidated = data.username !== undefined
-        if (isDataValidated) {
-          let isUserExist
+        const dataValidated = data.username !== undefined
+        if (dataValidated) {
+          let userExists
           try {
-            isUserExist = await checkUserExists(data.username)
+            userExists = await checkUserExists(data.username)
           } catch {
-            isUserExist = false
+            userExists = false
           }
-          if (isUserExist) {
+          if (userExists) {
             return res.status(409).end()
           } else {
             // has password and stored data in to elastic search

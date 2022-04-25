@@ -12,8 +12,9 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import moment from 'moment'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   BiBold,
   BiCode,
@@ -34,7 +35,15 @@ const CreatePost = () => {
   const [tags, setTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState('')
   const [content, setContent] = useState('')
+  const { data: session, status } = useSession()
   const router = useRouter()
+  const isAuthenticated = status === 'authenticated'
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
 
   const handleInputTag = (key: string) => {
     if (key === ' ' && tags.length <= 4) {
@@ -50,39 +59,41 @@ const CreatePost = () => {
   }
 
   const handleCreatePost = async () => {
-    const postContent: PostSource = {
-      authorID: '8sJqRoAB_KwOI5m5lqab',
-      title: title,
-      metaTitle: title,
-      slug: toSpinalCase(title),
-      tags: tags,
-      coverImg:
-        'https://res.cloudinary.com/practicaldev/image/fetch/s--jNcdxw77--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/sfwcvweirpf2qka2lg2b.png',
-      content: content,
-      description: title,
-      published: true,
-      publishedAt: moment().toISOString(),
-      createdAt: moment().toISOString(),
-      comments: [],
-    }
-    const sendData = await fetch('/api/posts', {
-      method: 'PUT',
-      body: JSON.stringify({ data: postContent }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    if (session) {
+      const postContent: PostSource = {
+        authorID: `${session.id}`,
+        title: title,
+        metaTitle: title,
+        slug: toSpinalCase(title),
+        tags: tags,
+        coverImg:
+          'https://res.cloudinary.com/practicaldev/image/fetch/s--jNcdxw77--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://thepracticaldev.s3.amazonaws.com/i/sfwcvweirpf2qka2lg2b.png',
+        content: content,
+        description: title,
+        published: true,
+        publishedAt: moment().toISOString(),
+        createdAt: moment().toISOString(),
+        comments: [],
+      }
+      const sendData = await fetch('/api/posts', {
+        method: 'PUT',
+        body: JSON.stringify({ data: postContent }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    const response = await sendData
-    if (response.status === 201) {
-      //alert(response.body)
-      router.push('/')
-    } else {
-      alert('Something went wrong')
+      const response = await sendData
+      if (response.status === 201) {
+        //alert(response.body)
+        router.push('/')
+      } else {
+        alert('Something went wrong')
+      }
     }
   }
 
-  return (
+  return isAuthenticated ? (
     <>
       <Container maxW="container.lg">
         <Box
@@ -198,6 +209,8 @@ const CreatePost = () => {
         </HStack>
       </Container>
     </>
+  ) : (
+    <></>
   )
 }
 

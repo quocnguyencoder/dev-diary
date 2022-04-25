@@ -12,8 +12,16 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+
+interface Response {
+  error: string
+  ok: boolean
+  status: number
+  url: string
+}
 
 const Login = () => {
   const [username, setUsername] = useState('')
@@ -21,21 +29,20 @@ const Login = () => {
   const router = useRouter()
 
   const handleLogin = async () => {
-    const sendData = await fetch('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ username: username, password: password }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const res = await signIn('credentials', {
+      redirect: false,
+      username: username,
+      password: password,
     })
 
-    const response = await sendData
-    if (response.status === 200) {
-      const json = await response.json()
-      alert(json.content)
-      router.push('/')
+    if (res) {
+      const response = res as Response
+      if (response.ok) {
+        router.push('/')
+      } else {
+        alert('Sign in failed, please try again')
+      }
     } else {
-      //console.log(response.status)
       alert('Sign in failed, please try again')
     }
   }

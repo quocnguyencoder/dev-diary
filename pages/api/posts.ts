@@ -1,5 +1,5 @@
-import { verify } from 'jsonwebtoken'
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
 import { createPost, getLatestPosts } from '@/services/posts'
 
@@ -13,15 +13,10 @@ const authenticated =
     req: NextApiRequest,
     res: NextApiResponse<Message | Post[] | Post>,
   ) => {
-    if (req.method === 'POST') {
-      const authToken = req.headers.authorization
-      const secret = process.env.JWT_SECRET_KEY
-      if (authToken !== undefined && secret !== undefined) {
-        verify(req.cookies.auth, secret, async (err, decoded) => {
-          if (!err && decoded) {
-            return await fn(req, res)
-          }
-        })
+    if (req.method === 'PUT') {
+      const session = await getSession({ req })
+      if (session) {
+        return await fn(req, res)
       } else {
         return res.status(401).json({ content: 'request failed' })
       }
