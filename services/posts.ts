@@ -32,7 +32,6 @@ const getPostBySlug = async (slug: string) => {
   return JSON.parse(JSON.stringify(result.hits.hits[0])) as Post
 }
 
-
 const getPostsBySearch = async (
   searchTerm: string,
   filterBy: string,
@@ -102,6 +101,7 @@ const getPostsBySearch = async (
           },
         })
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
 
 const countAuthorPosts = async (authorID: string) => {
   const result = await client.search<Document>({
@@ -129,12 +129,10 @@ const isPostsIndexExists = async () => {
     },
   })
   return !Object.hasOwn(result, 'status')
-
 }
 
 const createPost = async (data: PostSource) =>
   client.index({ index: 'posts', document: data })
-
 
 export {
   getLatestPosts,
@@ -142,6 +140,5 @@ export {
   createPost,
   countAuthorPosts,
   isPostsIndexExists,
-  getPostsBySearch
+  getPostsBySearch,
 }
-
