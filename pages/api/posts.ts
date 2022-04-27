@@ -4,11 +4,9 @@ import { Post, PostSource } from '@/interfaces/Post'
 import {
   countAuthorPosts,
   createPost,
-  getLatestPosts,
   getPostsBySearch,
   isPostsIndexExists,
 } from '@/services/posts'
-
 
 type Message = {
   content: string
