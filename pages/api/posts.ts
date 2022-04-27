@@ -52,9 +52,7 @@ export default authenticated(async function handler(
         if (session) {
           const data = req.body.data as PostSource
           let slug = `${session.username}/${data.slug}`
-          while (
-            (await countAuthorPostsBySlug(session.id as string, slug)) > 0
-          ) {
+          if ((await countAuthorPostsBySlug(session.id as string, slug)) > 0) {
             const r = (Math.random() + 1).toString(36).substring(7)
             slug = `${session.username}/${data.slug}-${r}`
           }
