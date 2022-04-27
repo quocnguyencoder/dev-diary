@@ -18,6 +18,7 @@ import {
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { validatedLogin } from '@/helpers/validated'
 import { UserSource } from '@/interfaces/User'
 
 const SignUp = () => {
@@ -26,41 +27,46 @@ const SignUp = () => {
   const [lastName, setLastName] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [validate, setValidate] = useState<boolean>(false)
   const router = useRouter()
 
   const handleSignUp = async () => {
     // TODO: make data validate function
-    const userData: UserSource = {
-      username: username,
-      password: password,
-      email: '',
-      avatar: '',
-      displayName: `${firstName} ${lastName}`,
-      posts: [],
-      followings: [],
-      followers: [],
-      bio: '',
-      work: '',
-      education: '',
-      joinedDate: moment().toISOString(),
-      savedPosts: [],
-      comments: [],
-    }
-    const sendData = await fetch('/api/signup', {
-      method: 'POST',
-      body: JSON.stringify({ data: userData }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    if (validatedLogin(username, password)) {
+      const userData: UserSource = {
+        username: username,
+        password: password,
+        email: '',
+        avatar: '',
+        displayName: `${firstName} ${lastName}`,
+        posts: [],
+        followings: [],
+        followers: [],
+        bio: '',
+        work: '',
+        education: '',
+        joinedDate: moment().toISOString(),
+        savedPosts: [],
+        comments: [],
+      }
+      const sendData = await fetch('/api/signup', {
+        method: 'POST',
+        body: JSON.stringify({ data: userData }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    const response = await sendData
-    if (response.status === 201) {
-      //alert(response.body)
-      router.push('/login')
+      const response = await sendData
+      if (response.status === 201) {
+        //alert(response.body)
+        router.push('/login')
+      } else {
+        //console.log(response.status)
+        alert('Sign up failed, please try again')
+      }
     } else {
-      //console.log(response.status)
-      alert('Sign up failed, please try again')
+      setValidate(true)
     }
   }
 
@@ -111,8 +117,16 @@ const SignUp = () => {
               <FormLabel>Username</FormLabel>
               <Input
                 type="text"
+                isInvalid={validate}
+                errorBorderColor="red.300"
                 onChange={(e) => setUsername(e.target.value)}
               />
+              {validate && (
+                <p style={{ color: 'red' }}>
+                  Must be 8-15 characters and must start with a letter, only
+                  letters and numbers.
+                </p>
+              )}
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
@@ -120,6 +134,8 @@ const SignUp = () => {
                 <Input
                   onChange={(e) => setPassword(e.target.value)}
                   type={showPassword ? 'text' : 'password'}
+                  isInvalid={validate}
+                  errorBorderColor="red.300"
                 />
                 <InputRightElement h={'full'}>
                   <Button
@@ -132,6 +148,13 @@ const SignUp = () => {
                   </Button>
                 </InputRightElement>
               </InputGroup>
+              {validate && (
+                <p style={{ color: 'red' }}>
+                  Must be 8-20 characters long (contain at least one lower-case
+                  letter, number. Not contain a colon (:), an ampersand (&), a
+                  period (.), a tilde (~), or a space).
+                </p>
+              )}
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button

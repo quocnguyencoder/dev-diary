@@ -7,6 +7,5 @@ export default function toSpinalCase(text: string) {
     ) /*Find all non alpha numeric and replace it with space*/
     .replace(/\s{1,}/g, '-') /*Convert all spaces to -*/
     .replace(/^-|[-]$/g, '') /*Slice - at the start and end*/
-
   return spinal
 }
