@@ -1,12 +1,8 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
-import { Post, PostSource } from '@/interfaces/Post'
-import {
-  countAuthorPosts,
-  createPost,
-  getLatestPosts,
-  isPostsIndexExists,
-} from '@/services/posts'
+import { CommentSource } from '@/interfaces/Comment'
+import { createComment, getCommentByPostID } from '@/services/comment'
+import { queryCommentator } from '@/services/users'
 
 type Message = {
   content: string
@@ -14,10 +10,7 @@ type Message = {
 
 const authenticated =
   (fn: NextApiHandler) =>
-  async (
-    req: NextApiRequest,
-    res: NextApiResponse<Message | Post[] | Post>,
-  ) => {
+  async (req: NextApiRequest, res: NextApiResponse<Message>) => {
     if (req.method === 'PUT') {
       const session = await getSession({ req })
       if (session) {
@@ -32,33 +25,31 @@ const authenticated =
 
 export default authenticated(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Message | Post[] | Post>,
+  res: NextApiResponse<Message | CommentSource[]>,
 ) {
   const method = req.method
-  //const query = req.query
+
   try {
     switch (method) {
       case 'GET': {
-        //const dataQuery = query === 'latest' ? {-- elastic query --}
-        const data = await getLatestPosts()
-        //const data = await getPostBySlug(`sample-post-1`)
-        return res.status(200).json(data)
+        const query = req.query
+        const data = await getCommentByPostID(query.postID as string)
+        return res.status(200).json(data as any[])
       }
       case 'PUT': {
         const session = await getSession({ req })
         if (session) {
-          const data = req.body.data as PostSource
-          const exists = await isPostsIndexExists()
-          if (exists) {
-            const count = await countAuthorPosts(session.id as string)
-            if (count != 0) {
-              data.slug = `${data.slug}-${count + 1}`
-            }
-          }
-          const dbRes = await createPost(data)
+          const data = req.body.data as CommentSource
+          const dbRes = await createComment(data)
           return res.status(201).json({ content: `${dbRes}` })
         }
+
         return res.status(401).json({ content: 'request failed' })
+      }
+      case 'POST': {
+        const data = req.body.array as string[]
+        const dbRes = await queryCommentator(data)
+        return res.status(200).json(dbRes as any[])
       }
     }
   } catch (err) {
