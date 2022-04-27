@@ -1,4 +1,4 @@
-export const sortByOptions = ['Most Relevant', 'Newest', 'Oldest'] as const
+export const sortByOptions = ['Most Relevant', 'Newest', 'Oldest']
 export const filterByOptions = ['Posts', 'People', 'Tags', 'My posts only']
 
 export type SearchSortBy = typeof sortByOptions[number]
