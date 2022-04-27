@@ -36,7 +36,7 @@ const BlogItem = ({ post }: Props) => {
             id={post._source.authorID}
           />
           <Heading marginTop="1">
-            <NextLink href={`/quoc/${post._source.slug}`} passHref>
+            <NextLink href={`/u/quoc/${post._source.slug}`} passHref>
               <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
                 {post._source.title}
               </Link>

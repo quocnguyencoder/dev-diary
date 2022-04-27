@@ -13,6 +13,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import BlogAuthor from '@/components/BlogAuthor'
 import BlogTags from '@/components/BlogTags'
+import Comment from '@/components/Comment'
 import { Post } from '@/interfaces/Post'
 import { getPostBySlug } from '@/services/posts'
 
@@ -46,7 +47,7 @@ const PostPage = ({ postContent }: Props) => {
     <Container maxW="3xl" pt="3" pb="3">
       <VStack
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
-        borderRadius={'10'}
+        borderTopRadius={'10'}
         boxShadow={'0 0 1px'}
         align="left"
       >
@@ -77,6 +78,7 @@ const PostPage = ({ postContent }: Props) => {
           />
         </VStack>
       </VStack>
+      <Comment postID={postContent._id} />
     </Container>
   )
 }
