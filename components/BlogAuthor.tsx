@@ -24,7 +24,10 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
       />
       <VStack alignItems={'left'} spacing="-0.5">
         <Text fontWeight="600">{name}</Text>
-        <Text fontSize="xs">{moment(date).format('LL')}</Text>
+        <Text fontSize="xs">{`${moment(date).format('LL')} (${moment(
+          date,
+          'YYYY-MM-DDTHH:mm:ssZ',
+        ).fromNow()})`}</Text>
       </VStack>
     </HStack>
   )

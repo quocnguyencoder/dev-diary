@@ -1,7 +1,7 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
-import { createPost, getLatestPosts } from '@/services/posts'
+import { createPost, getPostsBySearch } from '@/services/posts'
 
 type Message = {
   content: string
@@ -30,13 +30,17 @@ export default authenticated(async function handler(
   res: NextApiResponse<Message | Post[] | Post>,
 ) {
   const method = req.method
-  //const query = req.query
   try {
     switch (method) {
       case 'GET': {
-        //const dataQuery = query === 'latest' ? {-- elastic query --}
-        const data = await getLatestPosts()
-        //const data = await getPostBySlug(`sample-post-1`)
+        const query = req.query.q
+        const filterBy = req.query.filter || '*'
+        const orderBy = req.query.order || ''
+        const data = await getPostsBySearch(
+          `${query}`,
+          `${filterBy}`,
+          `${orderBy}`,
+        )
         return res.status(200).json(data)
       }
       case 'PUT': {

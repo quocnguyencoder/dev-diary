@@ -36,6 +36,9 @@
       ],
       "@/helpers/*": [
         "helpers/*"
+      ],
+      "@/types/*": [
+        "types/*"
       ]
     }
   },
