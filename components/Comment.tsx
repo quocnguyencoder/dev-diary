@@ -59,6 +59,7 @@ const Comment = ({ postID }: Props) => {
           },
         })
         setCommentator((await commentatorData.json()) as User[])
+        setReload(!reload)
       } else {
         alert('Something went wrong')
       }
