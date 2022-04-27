@@ -112,6 +112,10 @@ const countAuthorPostsBySlug = async (authorID: string, slug: string) => {
           {
             match: {
               authorID: `${authorID}`,
+            },
+          },
+          {
+            match: {
               slug: slug,
             },
           },
