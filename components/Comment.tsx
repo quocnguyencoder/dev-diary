@@ -59,7 +59,6 @@ const Comment = ({ postID }: Props) => {
           },
         })
         setCommentator((await commentatorData.json()) as User[])
-        setReload(!reload)
       } else {
         alert('Something went wrong')
       }
@@ -85,7 +84,6 @@ const Comment = ({ postID }: Props) => {
           'Content-Type': 'application/json',
         },
       })
-
       const response = await sendData
       if (response.status !== 201) {
         alert('Something went wrong')
