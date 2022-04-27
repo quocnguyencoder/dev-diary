@@ -1,7 +1,6 @@
 export default function toSpinalCase(text: string) {
   const spinal = text
     .toLowerCase() /*LowerCase it*/
-    .replace(/([A-Z])/g, ' $1') /*Find all cap and add space at the start*/
     .replace(
       /[^A-Za-z0-9]/g,
       ' ',

@@ -47,7 +47,7 @@ const PostPage = ({ postContent }: Props) => {
     <Container maxW="3xl" pt="3" pb="3">
       <VStack
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
-        borderTopRadius={'10'}
+        borderRadius={'10'}
         boxShadow={'0 0 1px'}
         align="left"
       >

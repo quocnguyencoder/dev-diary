@@ -13,7 +13,6 @@ const BlogItem = ({ post }: Props) => {
   return (
     <>
       <Box
-        marginTop={{ base: '1', sm: '5' }}
         display="flex"
         flexDirection={{ base: 'column', sm: 'row' }}
         justifyContent="space-between"
@@ -21,6 +20,7 @@ const BlogItem = ({ post }: Props) => {
         p={3}
         borderRadius={'10'}
         boxShadow={'0 0 1px'}
+        w={'100%'}
       >
         <Box
           display="flex"

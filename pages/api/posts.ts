@@ -4,7 +4,7 @@ import { Post, PostSource } from '@/interfaces/Post'
 import {
   countAuthorPosts,
   createPost,
-  getLatestPosts,
+  getPostsBySearch,
   isPostsIndexExists,
 } from '@/services/posts'
 
@@ -35,13 +35,17 @@ export default authenticated(async function handler(
   res: NextApiResponse<Message | Post[] | Post>,
 ) {
   const method = req.method
-  //const query = req.query
   try {
     switch (method) {
       case 'GET': {
-        //const dataQuery = query === 'latest' ? {-- elastic query --}
-        const data = await getLatestPosts()
-        //const data = await getPostBySlug(`sample-post-1`)
+        const query = req.query.q
+        const filterBy = req.query.filter || '*'
+        const orderBy = req.query.order || ''
+        const data = await getPostsBySearch(
+          `${query}`,
+          `${filterBy}`,
+          `${orderBy}`,
+        )
         return res.status(200).json(data)
       }
       case 'PUT': {
