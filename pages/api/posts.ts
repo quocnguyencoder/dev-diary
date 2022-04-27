@@ -2,10 +2,9 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
 import {
-  countAuthorPosts,
+  countAuthorPostsBySlug,
   createPost,
   getPostsBySearch,
-  isPostsIndexExists,
 } from '@/services/posts'
 
 type Message = {
@@ -52,13 +51,15 @@ export default authenticated(async function handler(
         const session = await getSession({ req })
         if (session) {
           const data = req.body.data as PostSource
-          const exists = await isPostsIndexExists()
-          if (exists) {
-            const count = await countAuthorPosts(session.id as string)
-            if (count != 0) {
-              data.slug = `${data.slug}-${count + 1}`
-            }
+          let slug = `${session.username}/${data.slug}`
+          while (
+            (await countAuthorPostsBySlug(session.id as string, slug)) > 0
+          ) {
+            const r = (Math.random() + 1).toString(36).substring(7)
+            slug = `${session.username}/${data.slug}-${r}`
           }
+          data.slug = slug
+          data.authorID = session.id as string
           const dbRes = await createPost(data)
           return res.status(201).json({ content: `${dbRes}` })
         }
