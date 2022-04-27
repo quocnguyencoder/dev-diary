@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { useSession } from 'next-auth/react'
-import { useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CommentList from './CommentList'
 import generateAvatar from '@/helpers/generateAvatar'
 import { Comment, CommentSource } from '@/interfaces/Comment'
@@ -26,7 +26,7 @@ const Comment = ({ postID }: Props) => {
   const [commentator, setCommentator] = useState<User[]>([])
   const [reload, setReload] = useState(false)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     async function fetchComment() {
       const fetchComment = await fetch(`/api/comment?postID=${postID}`, {
         method: 'GET',
@@ -115,7 +115,11 @@ const Comment = ({ postID }: Props) => {
             <Image
               borderRadius="full"
               boxSize="40px"
-              src={session ? generateAvatar(session.id as string) : undefined}
+              src={
+                session
+                  ? generateAvatar(session.id as string)
+                  : generateAvatar('')
+              }
               alt={`Avatar of commentator`}
             />
             <Textarea

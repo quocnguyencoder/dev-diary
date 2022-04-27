@@ -40,6 +40,7 @@ export default authenticated(async function handler(
         const session = await getSession({ req })
         if (session) {
           const data = req.body.data as CommentSource
+          data.commentatorID = session.id as string
           const dbRes = await createComment(data)
           return res.status(201).json({ content: `${dbRes}` })
         }
