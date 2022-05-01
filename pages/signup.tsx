@@ -49,14 +49,15 @@ const SignUp = () => {
         savedPosts: [],
         comments: [],
       }
+      //send json data
       const sendData = await fetch('/api/signup', {
         method: 'POST',
-        body: JSON.stringify({ data: userData }),
+        body: JSON.stringify({ data: userData }), //convert object to json
         headers: {
           'Content-Type': 'application/json',
         },
       })
-
+      //check response of data
       const response = await sendData
       if (response.status === 201) {
         //alert(response.body)

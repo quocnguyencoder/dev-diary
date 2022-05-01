@@ -6,7 +6,9 @@ import { getUserByUsername } from '@/services/users'
 export default NextAuth({
   providers: [
     CredentialProvider({
+      //The name to display on the sign in form
       name: 'credentials',
+      // The credentials is used to generate a suitable form on the sign in page.
       credentials: {
         username: {
           label: 'username',
@@ -18,6 +20,7 @@ export default NextAuth({
         },
       },
       authorize: async (credentials) => {
+        //add logic here to look up the user from the credentials supplied
         const username = credentials?.username
         const password = credentials?.password
 

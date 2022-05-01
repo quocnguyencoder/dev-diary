@@ -17,6 +17,7 @@ export default async function handler(
   try {
     switch (method) {
       case 'POST': {
+        //take data from usersource
         const data = req.body.data as UserSource
         // TODO: make data validate function
         if (validatedLogin(data.username, data.password)) {
@@ -24,14 +25,17 @@ export default async function handler(
           if (dataValidated) {
             let userExists
             try {
+              // check user exist
               userExists = await checkUserExists(data.username)
             } catch {
               userExists = false
             }
             if (userExists) {
+              //request not complete, user exist
               return res.status(409).end()
             } else {
               // has password and stored data in to elastic search
+              //hash password
               hash(data.password, 10, async (err, hash) => {
                 if (!err) {
                   data.password = hash
