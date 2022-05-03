@@ -17,77 +17,56 @@ import Interact from '@/components/Interact'
 import RelatedPost from '@/components/RelatedPost'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
-import { getPostBySlug } from '@/services/posts'
+import { getPostBySlug, queryPostsBySameAuthor } from '@/services/posts'
 import { getUserByUserID } from '@/services/users'
 
 interface Props {
   postContent: Post
   author: User
+  postList: Post[]
 }
 
-const PostPage = ({ postContent, author }: Props) => {
-  // const markdown = `# Hello, this is a sample post\n
-  // **Welcome to DevDiary**\n\n
-  // _This is a sentence written in italic._\n\n
-  // This is a normal sentence.\n\n
-  // **This is an ordered list:**
-  // 1. Ordered list item 1
-  // 2. Ordered list item 2\n
-  // **This is an unordered list:**
-  // - Unordered list item 1
-  // - Unordered list item 2\n\n
-  // **This is a link:** [Duck Duck Go](https://duckduckgo.com).\n
-  // **This is an image:** ![duck](https://mdg.imgix.net/assets/images/tux.png?auto=format&fit=clip&q=40&w=100)\n
-  // * This is a paragraph:\n
-  //   > With a blockquote\n
-  // * This is a code block:\n
-  //   \`\`\` console.log(hello, world); \`\`\`\n
-  // * This is a single-line code:\n
-  //   \`\`\` const a = 1; \`\`\`
-  // * **To do**: styling code block with syntax highlight
-  // `
-
+const PostPage = ({ postContent, author, postList }: Props) => {
   return (
-    <div style={{ display: 'flex' }}>
+    <Container maxW="8xl" pt="3" pb="3" display="flex" gap={3}>
       <Interact postID={postContent._id} />
-      <Container maxW="3xl" pt="3" pb="3" style={{ marginLeft: '11%' }}>
-        <VStack
-          bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
-          borderRadius={'10'}
-          boxShadow={'0 0 1px'}
-          alignItems="left"
-        >
-          <Image
-            w="100%"
-            maxHeight="40vh"
-            objectFit="cover"
-            borderRadius={'10px 10px 0 0'}
-            src={postContent._source.coverImg}
-            alt="cover image"
+      <VStack
+        bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
+        borderRadius={'10'}
+        boxShadow={'0 0 1px'}
+        alignItems="left"
+        flex={1}
+      >
+        <Image
+          w="100%"
+          maxHeight="40vh"
+          objectFit="cover"
+          borderRadius={'10px 10px 0 0'}
+          src={postContent._source.coverImg}
+          alt="cover image"
+        />
+        <VStack w="100%" p="1% 5% 3% 5%" gap="1em" align="left">
+          <BlogAuthor
+            name={author._source.displayName}
+            date={postContent._source.publishedAt}
+            id={postContent._source.authorID}
           />
-          <VStack w="100%" p="1% 5% 3% 5%" gap="1em" align="left">
-            <BlogAuthor
-              name={author._source.displayName}
-              date={postContent._source.publishedAt}
-              id={postContent._source.authorID}
-            />
-            <Heading as="h2" size="3xl">
-              {postContent._source.title}
-            </Heading>
-            <BlogTags tags={postContent._source.tags} />
+          <Heading as="h2" size="3xl">
+            {postContent._source.title}
+          </Heading>
+          <BlogTags tags={postContent._source.tags} />
 
-            <ReactMarkdown
-              components={ChakraUIRenderer()}
-              children={postContent._source.content}
-              remarkPlugins={[remarkGfm]}
-              skipHtml
-            />
-          </VStack>
-          <Comment postID={postContent._id} />
+          <ReactMarkdown
+            components={ChakraUIRenderer()}
+            children={postContent._source.content}
+            remarkPlugins={[remarkGfm]}
+            skipHtml
+          />
         </VStack>
-      </Container>
-      <RelatedPost authorInfo={author} postID={postContent._id} />
-    </div>
+        <Comment postID={postContent._id} />
+      </VStack>
+      <RelatedPost authorInfo={author} postList={postList} />
+    </Container>
   )
 }
 
@@ -96,17 +75,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // slug -> username =>data
   let postContent: Post
   let author: User
+  let postList: Post[]
   try {
     postContent = await getPostBySlug(`${slug}`)
     author = await getUserByUserID(postContent._source.authorID)
+    postList = await queryPostsBySameAuthor(
+      author._source.posts.filter((post) => post !== postContent._id),
+    )
   } catch (err) {
     postContent = {} as Post
     author = {} as User
+    postList = [] as Post[]
   }
   return {
     props: {
       postContent, // will be passed to the page component as props
       author,
+      postList,
     },
   }
 }

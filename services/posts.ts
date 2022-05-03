@@ -138,6 +138,9 @@ const queryPostsBySameAuthor = async (postIDList: string[]) => {
         },
       },
     },
+    body: {
+      sort: [{ publishedAt: { order: 'desc' } }],
+    },
   })
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
@@ -147,6 +150,20 @@ const createPost = async (data: PostSource) => {
   return response._id
 }
 
+const likePost = (postID: string, userID: string) => {
+  client.update<Document>({
+    index: 'posts',
+    id: postID,
+    script: {
+      source: 'ctx._source.liked.add(params.liked)',
+      lang: 'painless',
+      params: {
+        liked: userID,
+      },
+    },
+  })
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -154,4 +171,5 @@ export {
   countAuthorPostsBySlug,
   getPostsBySearch,
   queryPostsBySameAuthor,
+  likePost,
 }

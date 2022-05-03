@@ -5,7 +5,6 @@ import {
   countAuthorPostsBySlug,
   createPost,
   getPostsBySearch,
-  queryPostsBySameAuthor,
 } from '@/services/posts'
 import { updateUserPosts } from '@/services/users'
 
@@ -65,11 +64,6 @@ export default authenticated(async function handler(
           return res.status(201).json({ content: `${result}` })
         }
         return res.status(401).json({ content: 'request failed' })
-      }
-      case 'POST': {
-        const data = req.body.array as string[]
-        const dbRes = await queryPostsBySameAuthor(data)
-        return res.status(200).json(dbRes)
       }
     }
   } catch (err) {

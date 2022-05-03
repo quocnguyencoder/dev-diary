@@ -29,13 +29,7 @@ const Interact = ({ postID }: Props) => {
   }
 
   return (
-    <VStack
-      style={{
-        position: 'fixed',
-        marginTop: '12px',
-        left: '7%',
-      }}
-    >
+    <VStack pl={7} pr={5}>
       <IconButton
         aria-label="Hearts"
         _hover={{ color: 'red', bg: 'pink' }}

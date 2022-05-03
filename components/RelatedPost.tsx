@@ -8,7 +8,6 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import moment from 'moment'
-import { useLayoutEffect, useState } from 'react'
 import BlogTags from './BlogTags'
 import generateAvatar from '@/helpers/generateAvatar'
 import { Post } from '@/interfaces/Post'
@@ -16,39 +15,12 @@ import { User } from '@/interfaces/User'
 
 interface Props {
   authorInfo: User
-  postID: string
+  postList: Post[]
 }
 
-const RelatedPost = ({ authorInfo, postID }: Props) => {
-  const [posts, setPosts] = useState<Post[]>([])
-
-  useLayoutEffect(() => {
-    async function getPostsBySameAuthor() {
-      const fetchPostsList = await fetch(`/api/posts`, {
-        method: 'POST',
-        body: JSON.stringify({
-          array: authorInfo._source.posts.filter((post) => post !== postID),
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      setPosts((await fetchPostsList.json()) as Post[])
-    }
-    getPostsBySameAuthor()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+const RelatedPost = ({ authorInfo, postList }: Props) => {
   return (
-    <VStack
-      w="30%"
-      style={{
-        position: 'fixed',
-        marginTop: '12px',
-        left: '69%',
-      }}
-      alignItems="left"
-    >
+    <VStack alignItems="left" w="25%">
       <VStack
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
         spacing="1"
@@ -86,11 +58,12 @@ const RelatedPost = ({ authorInfo, postID }: Props) => {
         <Heading size="md" margin="auto">
           Same Author
         </Heading>
-        {posts.map((post) => (
+        {postList.map((post) => (
           <Link
             href={`/u/${post._source.slug}`}
             key={post._id}
             _hover={{ color: '#909DDA' }}
+            p={2}
           >
             <VStack alignItems="left" boxShadow={'0px -0.25px #888'} p="2%">
               <Heading as="h6" size="sm">
