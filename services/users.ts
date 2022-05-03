@@ -81,6 +81,21 @@ const updateUserPosts = async (userID: string, postID: string) => {
   return result
 }
 
+const updateUserComments = async (userID: string, commentID: string) => {
+  const result = await client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: 'ctx._source.comments.add(params.commentID)',
+      lang: 'painless',
+      params: {
+        commentID: commentID,
+      },
+    },
+  })
+  return result
+}
+
 export {
   createUser,
   checkUserExists,
@@ -88,4 +103,5 @@ export {
   queryCommentator,
   getUserByUserID,
   updateUserPosts,
+  updateUserComments,
 }
