@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react'
 import { User } from '@/interfaces/User'
+import { removeSavedPosts, savedPosts } from '@/services/users'
 
 type Message = {
   content: string
@@ -13,6 +15,16 @@ export default async function handler(
   //const query = req.query
   try {
     switch (method) {
+      case 'POST': {
+        const session = await getSession({ req })
+        const postID = req.body.postID
+        const action = req.body.action
+        if (session)
+          action === 'save'
+            ? savedPosts(session.id as string, postID)
+            : removeSavedPosts(session.id as string, postID)
+        return res.status(200).end()
+      }
       default: {
         return res.status(405).json({ content: 'Method not supported' })
       }

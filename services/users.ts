@@ -96,6 +96,35 @@ const updateUserComments = async (userID: string, commentID: string) => {
   return result
 }
 
+const savedPosts = (userID: string, postID: string) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: 'ctx._source.savedPosts.add(params.postID)',
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+}
+
+const removeSavedPosts = (userID: string, postID: string) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source:
+        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) }',
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+}
+
 export {
   createUser,
   checkUserExists,
@@ -104,4 +133,6 @@ export {
   getUserByUserID,
   updateUserPosts,
   updateUserComments,
+  savedPosts,
+  removeSavedPosts,
 }

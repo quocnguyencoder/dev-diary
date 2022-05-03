@@ -49,7 +49,7 @@ const PostPage = ({ postContent, author }: Props) => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <Interact />
+      <Interact postID={postContent._id} />
       <Container maxW="3xl" pt="3" pb="3" style={{ marginLeft: '11%' }}>
         <VStack
           bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
