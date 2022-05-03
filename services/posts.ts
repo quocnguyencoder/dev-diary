@@ -126,8 +126,26 @@ const countAuthorPostsBySlug = async (authorID: string, slug: string) => {
   return result.hits.hits.length
 }
 
-const createPost = async (data: PostSource) =>
-  client.index({ index: 'posts', document: data })
+const queryPostsBySameAuthor = async (postIDList: string[]) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: postIDList,
+          },
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
+const createPost = async (data: PostSource) => {
+  const response = await client.index({ index: 'posts', document: data })
+  return response._id
+}
 
 export {
   getLatestPosts,
@@ -135,4 +153,5 @@ export {
   createPost,
   countAuthorPostsBySlug,
   getPostsBySearch,
+  queryPostsBySameAuthor,
 }

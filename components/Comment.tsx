@@ -97,56 +97,59 @@ const Comment = ({ postID }: Props) => {
   return (
     <>
       <VStack
-        bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
-        boxShadow={'0 0 1px'}
+        w="100%"
+        p="1% 5% 3% 5%"
+        gap="1em"
         align="left"
+        boxShadow={'0px 0.25px #888, 0px -0.25px #888'}
+        borderBottomRadius={commentList.length > 0 ? '0' : '10'}
       >
-        <VStack w="100%" p="1% 5% 3% 5%" gap="1em" align="left">
-          <Text
-            as="b"
-            marginTop="2"
-            color={useColorModeValue('gray.700', 'gray.200')}
-            fontSize="lg"
-          >
-            Discussion ({commentList.length})
-          </Text>
-          <Flex style={{ gap: '2%' }}>
-            <Image
-              borderRadius="full"
-              boxSize="40px"
-              src={
-                session
-                  ? generateAvatar(session.id as string)
-                  : generateAvatar('')
-              }
-              alt={`Avatar of commentator`}
-            />
-            <Textarea
-              variant="unstyled"
-              size="lg"
-              resize="none"
-              borderWidth="2px 2px 2px 2px"
-              borderColor="lightGray"
-              borderRadius={10}
-              paddingLeft="1%"
-              _focus={{ borderColor: '#2B6CB0' }}
-              placeholder="Add to discussion"
-              height={'20vh'}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </Flex>
-          <Button
-            colorScheme="blue"
-            size="md"
-            isDisabled={status == 'unauthenticated' ? true : false}
-            onClick={() => handleComment()}
-          >
-            Submit
-          </Button>
-        </VStack>
+        <Text
+          as="b"
+          marginTop="2"
+          color={useColorModeValue('gray.700', 'gray.200')}
+          fontSize="lg"
+        >
+          Discussion ({commentList.length})
+        </Text>
+        <Flex style={{ gap: '2%' }}>
+          <Image
+            borderRadius="full"
+            boxSize="40px"
+            src={
+              session
+                ? generateAvatar(session.id as string)
+                : generateAvatar('')
+            }
+            alt={`Avatar of commentator`}
+          />
+          <Textarea
+            variant="unstyled"
+            size="lg"
+            resize="none"
+            borderWidth="2px 2px 2px 2px"
+            borderColor="lightGray"
+            borderRadius={10}
+            paddingLeft="1%"
+            _focus={{ borderColor: '#2B6CB0' }}
+            placeholder="Add to discussion"
+            height={'20vh'}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+        </Flex>
+        <Button
+          colorScheme="blue"
+          size="md"
+          isDisabled={status == 'unauthenticated' ? true : false}
+          onClick={() => handleComment()}
+        >
+          Submit
+        </Button>
       </VStack>
-      <CommentList commentList={commentList} commentator={commentator} />
+      {commentList.length > 0 && (
+        <CommentList commentList={commentList} commentator={commentator} />
+      )}
     </>
   )
 }

@@ -22,6 +22,23 @@ const queryByUsername = async (username: string) => {
   return result.hits.hits
 }
 
+const getUserByUserID = async (userID: string) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_excludes: 'password',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: [userID],
+          },
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
+}
+
 const queryCommentator = async (userIDList: string[]) => {
   const result = await client.search<Document>({
     index: 'users',
@@ -49,4 +66,26 @@ const getUserByUsername = async (username: string) => {
   return JSON.parse(JSON.stringify(result[0])) as User
 }
 
-export { createUser, checkUserExists, getUserByUsername, queryCommentator }
+const updateUserPosts = async (userID: string, postID: string) => {
+  const result = await client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: 'ctx._source.posts.add(params.postID)',
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+  return result
+}
+
+export {
+  createUser,
+  checkUserExists,
+  getUserByUsername,
+  queryCommentator,
+  getUserByUserID,
+  updateUserPosts,
+}
