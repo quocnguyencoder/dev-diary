@@ -3,19 +3,22 @@ import React from 'react'
 import BlogList from '@/components/BlogList'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
+import { User } from '@/interfaces/User'
 import { getLatestPosts } from '@/services/posts'
+import { getUsersInfoByIDList } from '@/services/users'
 interface Props {
   latestPosts: Post[]
+  usersList: User[]
 }
 
-const Home = ({ latestPosts }: Props) => {
+const Home = ({ latestPosts, usersList }: Props) => {
   return (
     <HomeContext.Provider value={{ latestPosts }}>
       <Container maxW="container.md" pt="3" pb="3">
         <Heading as="h1" mb={1}>
           Latest
         </Heading>
-        <BlogList postsList={latestPosts} />
+        <BlogList postsList={latestPosts} usersList={usersList} />
       </Container>
     </HomeContext.Provider>
   )
@@ -24,17 +27,20 @@ const Home = ({ latestPosts }: Props) => {
 export default Home
 
 export async function getStaticProps() {
-  // const res = await fetch('http://localhost:3000/api/posts')
-  // const latestPosts = (await res.json()) as Post[]
   let latestPosts: Post[]
+  let idList: string[] = []
+  let usersList: User[] = []
   try {
     latestPosts = await getLatestPosts()
+    idList = latestPosts.map((post) => post._source.authorID)
+    usersList = await getUsersInfoByIDList(idList)
   } catch {
     latestPosts = []
   }
   return {
     props: {
       latestPosts,
+      usersList,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in

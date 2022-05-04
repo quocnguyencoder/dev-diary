@@ -4,12 +4,19 @@ import React from 'react'
 import BlogAuthor from './BlogAuthor'
 import BlogTags from './BlogTags'
 import { Post } from '@/interfaces/Post'
+import { User } from '@/interfaces/User'
 
 interface Props {
   post: Post
+  userInfo: User
 }
 
-const BlogItem = ({ post }: Props) => {
+const BlogItem = ({ post, userInfo }: Props) => {
+  const hasUserInfo = userInfo._source !== undefined
+  const displayName = hasUserInfo
+    ? userInfo._source.displayName
+    : `Author's name`
+  const username = hasUserInfo ? userInfo._source.username : '#'
   return (
     <>
       <Box
@@ -31,9 +38,10 @@ const BlogItem = ({ post }: Props) => {
           gap={'1'}
         >
           <BlogAuthor
-            name={`Author's name`}
+            name={`${displayName}`}
             date={post._source.publishedAt}
             id={post._source.authorID}
+            username={username}
           />
           <Heading marginTop="1">
             <NextLink href={`/u/${post._source.slug}`} passHref>

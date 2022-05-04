@@ -2,7 +2,11 @@ import { List, ListIcon, ListItem, useColorModeValue } from '@chakra-ui/react'
 import React from 'react'
 import { RiChat1Line, RiFileList3Line, RiHashtag } from 'react-icons/ri'
 
-const UserActivitiesList = () => {
+interface Props {
+  postsNum: number
+}
+
+const UserActivitiesList = ({ postsNum }: Props) => {
   return (
     <List
       bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
@@ -15,7 +19,7 @@ const UserActivitiesList = () => {
     >
       <ListItem>
         <ListIcon as={RiFileList3Line} boxSize="1.5em" />
-        {'5 posts published'}
+        {`${postsNum} posts published`}
       </ListItem>
       <ListItem>
         <ListIcon as={RiHashtag} boxSize="1.5em" />

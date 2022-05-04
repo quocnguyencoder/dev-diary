@@ -24,6 +24,8 @@ interface Props {
 const UserOverview = ({ userInfo }: Props) => {
   const { data: session } = useSession()
   const isCurrentUser = session && session.id === userInfo._id
+  const bio =
+    userInfo._source.bio === '' ? '404 bio not found' : userInfo._source.bio
 
   const backgroundColor = useColorModeValue('whiteAlpha.900', 'gray.700')
   return (
@@ -36,7 +38,11 @@ const UserOverview = ({ userInfo }: Props) => {
       pb={7}
     >
       <HStack w="100%" justifyContent={'space-between'} mt={-6}>
-        <Button visibility={'hidden'}>None display</Button>
+        {isCurrentUser ? (
+          <Button visibility={'hidden'}>Follow</Button>
+        ) : (
+          <Button visibility={'hidden'}>Follow</Button>
+        )}
         <Avatar
           size={'xl'}
           border={`6px solid #fff`}
@@ -53,13 +59,12 @@ const UserOverview = ({ userInfo }: Props) => {
         {userInfo._source.displayName}
       </Text>
       <Text maxWidth="70%" textAlign="center">
-        Obsessed with low-code and automation, responsible for 2.8 million
-        downloads at NuGet, and plays 5 musical instruments if you extort me
+        {bio}
       </Text>
       <HStack>
         <UserInfoWithIcon
           icon={<Icon as={RiMapPinLine} boxSize="1.5em" />}
-          text="Nha Trang, Vietnam"
+          text=" Vietnam"
         />
         <UserInfoWithIcon
           icon={<Icon as={RiCake2Line} boxSize="1.5em" />}
@@ -67,7 +72,7 @@ const UserOverview = ({ userInfo }: Props) => {
         />
         <UserInfoWithIcon
           icon={<Icon as={FiMail} boxSize="1.5em" />}
-          text={`quocnguyen612k@gmail.com`}
+          text={``}
         />
         <UserInfoWithIcon
           icon={<Icon as={BsGithub} boxSize="1.5em" />}

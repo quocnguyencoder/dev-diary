@@ -6,6 +6,7 @@ import BlogItem from '@/components/BlogItem'
 import FilterOptions from '@/components/FilterOptions'
 import SortOptions from '@/components/SortOptions'
 import { Post } from '@/interfaces/Post'
+import { User } from '@/interfaces/User'
 import { SearchFilterBy, SearchSortBy } from '@/types/search'
 
 const Search = () => {
@@ -60,7 +61,11 @@ const Search = () => {
         <VStack flex={1}>
           {hasResults ? (
             results.map((post) => (
-              <BlogItem key={`search-result-${post._id}`} post={post} />
+              <BlogItem
+                key={`search-result-${post._id}`}
+                post={post}
+                userInfo={{} as User}
+              />
             ))
           ) : (
             <VStack p={3} borderRadius={'10'} boxShadow={'0 0 1px'} w={'100%'}>
