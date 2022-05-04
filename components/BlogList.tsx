@@ -1,22 +1,30 @@
-import { Container, Heading, VStack } from '@chakra-ui/react'
+import { VStack } from '@chakra-ui/react'
 import React from 'react'
 import BlogItem from './BlogItem'
-import { useHomeContext } from '@/contexts/HomeContext'
+import { Post } from '@/interfaces/Post'
+import { User } from '@/interfaces/User'
 
-const BlogList = () => {
-  const { latestPosts } = useHomeContext()
+interface Props {
+  postsList: Post[]
+  usersList: User[]
+}
 
+const BlogList = ({ postsList, usersList }: Props) => {
   return (
-    <Container maxW="container.md" pt="3" pb="3">
-      <Heading as="h1" mb={1}>
-        Latest
-      </Heading>
-      <VStack>
-        {latestPosts.map((post) => (
-          <BlogItem key={`latest-${post._id}`} post={post} />
-        ))}
-      </VStack>
-    </Container>
+    <VStack flex={1}>
+      {postsList.map((post) => {
+        const userInfo = usersList.filter(
+          (user) => user._id === post._source.authorID,
+        )
+        return (
+          <BlogItem
+            key={`post-${post._id}`}
+            post={post}
+            userInfo={userInfo[0]}
+          />
+        )
+      })}
+    </VStack>
   )
 }
 
