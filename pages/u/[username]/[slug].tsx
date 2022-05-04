@@ -27,6 +27,7 @@ interface Props {
 }
 
 const PostPage = ({ postContent, author, postList }: Props) => {
+
   return (
     <Container maxW="8xl" pt="3" pb="3" display="flex" gap={3}>
       <Interact postID={postContent._id} />
@@ -47,9 +48,12 @@ const PostPage = ({ postContent, author, postList }: Props) => {
         />
         <VStack w="100%" p="1% 5% 3% 5%" gap="1em" align="left">
           <BlogAuthor
+
             name={author._source.displayName}
+
             date={postContent._source.publishedAt}
             id={postContent._source.authorID}
+            username={userInfo._source.displayName}
           />
           <Heading as="h2" size="3xl">
             {postContent._source.title}
@@ -74,6 +78,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.query
   // slug -> username =>data
   let postContent: Post
+
   let author: User
   let postList: Post[]
   try {
@@ -86,12 +91,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     postContent = {} as Post
     author = {} as User
     postList = [] as Post[]
-  }
+
+ 
+ 
   return {
     props: {
       postContent, // will be passed to the page component as props
       author,
       postList,
+
     },
   }
 }

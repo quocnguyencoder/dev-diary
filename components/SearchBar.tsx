@@ -18,6 +18,15 @@ const SearchBar = () => {
     querySearchTerm !== undefined && setSearchTerm(querySearchTerm as string)
   }, [querySearchTerm])
 
+  const gotoSearch = () =>
+    router.push(`/search?q=${searchTerm}`, undefined, {
+      shallow: false,
+    })
+
+  const handleKeyboardSearch = (key: string) => {
+    key === 'Enter' && gotoSearch()
+  }
+
   return (
     <InputGroup w="30vw" display={{ base: 'none', md: 'block', lg: 'block' }}>
       <Input
@@ -25,6 +34,7 @@ const SearchBar = () => {
         placeholder="Search..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        onKeyUp={(e) => handleKeyboardSearch(e.key)}
         focusBorderColor={useColorModeValue('teal.500', 'teal.300')}
       />
       <InputRightElement>
@@ -32,11 +42,7 @@ const SearchBar = () => {
           variant="ghost"
           aria-label="Search database"
           icon={<SearchIcon />}
-          onClick={() =>
-            router.push(`/search?q=${searchTerm}`, undefined, {
-              shallow: false,
-            })
-          }
+          onClick={() => gotoSearch()}
         />
       </InputRightElement>
     </InputGroup>

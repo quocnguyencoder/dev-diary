@@ -75,7 +75,7 @@ export default function AppBar() {
                   </MenuButton>
                   <MenuList>
                     <MenuItem>
-                      <NextLink href="/" passHref>
+                      <NextLink href={`/u/${session.username}`} passHref>
                         <Link>
                           <Text>{`${session.displayName}`}</Text>
                           <Text>{`@${session.username}`}</Text>

@@ -164,6 +164,27 @@ const likePost = (postID: string, userID: string) => {
   })
 }
 
+const getAllUserPosts = async (userID: string) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        must: [
+          {
+            match: {
+              authorID: `${userID}`,
+            },
+          },
+        ],
+      },
+    },
+    body: {
+      sort: [{ publishedAt: { order: 'desc' } }],
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -172,4 +193,6 @@ export {
   getPostsBySearch,
   queryPostsBySameAuthor,
   likePost,
+  getAllUserPosts,
+
 }

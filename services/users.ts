@@ -56,6 +56,23 @@ const queryCommentator = async (userIDList: string[]) => {
   return result.hits.hits
 }
 
+const queryByIDList = async (userIDList: string[]) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_excludes: 'password',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: userIDList,
+          },
+        },
+      },
+    },
+  })
+  return result.hits.hits
+}
+
 const checkUserExists = async (username: string) => {
   const result = await queryByUsername(username)
   return result.length !== 0
@@ -65,6 +82,7 @@ const getUserByUsername = async (username: string) => {
   const result = await queryByUsername(username)
   return JSON.parse(JSON.stringify(result[0])) as User
 }
+
 
 const updateUserPosts = async (userID: string, postID: string) => {
   const result = await client.update<Document>({
@@ -123,6 +141,11 @@ const removeSavedPosts = (userID: string, postID: string) => {
       },
     },
   })
+
+const getUsersInfoByIDList = async (idList: string[]) => {
+  const result = await queryByIDList(idList)
+  return JSON.parse(JSON.stringify(result)) as User[]
+
 }
 
 export {
@@ -130,9 +153,13 @@ export {
   checkUserExists,
   getUserByUsername,
   queryCommentator,
+
   getUserByUserID,
   updateUserPosts,
   updateUserComments,
   savedPosts,
   removeSavedPosts,
+
+  getUsersInfoByIDList,
+
 }
