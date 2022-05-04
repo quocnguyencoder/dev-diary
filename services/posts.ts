@@ -129,10 +129,32 @@ const countAuthorPostsBySlug = async (authorID: string, slug: string) => {
 const createPost = async (data: PostSource) =>
   client.index({ index: 'posts', document: data })
 
+const getAllUserPosts = async (userID: string) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        must: [
+          {
+            match: {
+              authorID: `${userID}`,
+            },
+          },
+        ],
+      },
+    },
+    body: {
+      sort: [{ publishedAt: { order: 'desc' } }],
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
   createPost,
   countAuthorPostsBySlug,
   getPostsBySearch,
+  getAllUserPosts,
 }

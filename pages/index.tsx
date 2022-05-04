@@ -1,8 +1,9 @@
+import { Container, Heading } from '@chakra-ui/react'
+import React from 'react'
 import BlogList from '@/components/BlogList'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
 import { getLatestPosts } from '@/services/posts'
-
 interface Props {
   latestPosts: Post[]
 }
@@ -10,7 +11,12 @@ interface Props {
 const Home = ({ latestPosts }: Props) => {
   return (
     <HomeContext.Provider value={{ latestPosts }}>
-      <BlogList />
+      <Container maxW="container.md" pt="3" pb="3">
+        <Heading as="h1" mb={1}>
+          Latest
+        </Heading>
+        <BlogList postsList={latestPosts} />
+      </Container>
     </HomeContext.Provider>
   )
 }
