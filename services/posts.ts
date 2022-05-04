@@ -126,8 +126,43 @@ const countAuthorPostsBySlug = async (authorID: string, slug: string) => {
   return result.hits.hits.length
 }
 
-const createPost = async (data: PostSource) =>
-  client.index({ index: 'posts', document: data })
+const queryPostsBySameAuthor = async (postIDList: string[]) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: postIDList,
+          },
+        },
+      },
+    },
+    body: {
+      sort: [{ publishedAt: { order: 'desc' } }],
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
+const createPost = async (data: PostSource) => {
+  const response = await client.index({ index: 'posts', document: data })
+  return response._id
+}
+
+const likePost = (postID: string, userID: string) => {
+  client.update<Document>({
+    index: 'posts',
+    id: postID,
+    script: {
+      source: 'ctx._source.liked.add(params.liked)',
+      lang: 'painless',
+      params: {
+        liked: userID,
+      },
+    },
+  })
+}
 
 const getAllUserPosts = async (userID: string) => {
   const result = await client.search<Document>({
@@ -156,5 +191,8 @@ export {
   createPost,
   countAuthorPostsBySlug,
   getPostsBySearch,
+  queryPostsBySameAuthor,
+  likePost,
   getAllUserPosts,
+
 }

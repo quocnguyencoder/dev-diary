@@ -8,30 +8,34 @@ import {
 } from '@chakra-ui/react'
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
 import { GetServerSideProps } from 'next'
-import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import BlogAuthor from '@/components/BlogAuthor'
 import BlogTags from '@/components/BlogTags'
 import Comment from '@/components/Comment'
+import Interact from '@/components/Interact'
+import RelatedPost from '@/components/RelatedPost'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
-import { getPostBySlug } from '@/services/posts'
-import { getUsersInfoByIDList } from '@/services/users'
+import { getPostBySlug, queryPostsBySameAuthor } from '@/services/posts'
+import { getUserByUserID } from '@/services/users'
 
 interface Props {
   postContent: Post
-  userInfo: User
+  author: User
+  postList: Post[]
 }
 
-const PostPage = ({ postContent, userInfo }: Props) => {
+const PostPage = ({ postContent, author, postList }: Props) => {
   return (
-    <Container maxW="3xl" pt="3" pb="3">
+    <Container maxW="8xl" pt="3" pb="3" display="flex" gap={3}>
+      <Interact postID={postContent._id} />
       <VStack
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
         borderRadius={'10'}
         boxShadow={'0 0 1px'}
-        align="left"
+        alignItems="left"
+        flex={1}
       >
         <Image
           w="100%"
@@ -43,10 +47,10 @@ const PostPage = ({ postContent, userInfo }: Props) => {
         />
         <VStack w="100%" p="1% 5% 3% 5%" gap="1em" align="left">
           <BlogAuthor
-            name={userInfo._source.displayName}
+            name={author._source.displayName}
             date={postContent._source.publishedAt}
             id={postContent._source.authorID}
-            username={userInfo._source.displayName}
+            username={author._source.username}
           />
           <Heading as="h2" size="3xl">
             {postContent._source.title}
@@ -60,8 +64,9 @@ const PostPage = ({ postContent, userInfo }: Props) => {
             skipHtml
           />
         </VStack>
+        <Comment postID={postContent._id} />
       </VStack>
-      <Comment postID={postContent._id} />
+      <RelatedPost authorInfo={author} postList={postList} />
     </Container>
   )
 }
@@ -70,19 +75,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug } = context.query
   // slug -> username =>data
   let postContent: Post
-  let userInfo: User
+
+  let author: User
+  let postList: Post[]
   try {
     postContent = await getPostBySlug(`${slug}`)
-    const usersInfo = await getUsersInfoByIDList([postContent._source.authorID])
-    userInfo = usersInfo[0]
+    author = await getUserByUserID(postContent._source.authorID)
+    postList = await queryPostsBySameAuthor(
+      author._source.posts.filter((post) => post !== postContent._id),
+    )
   } catch (err) {
     postContent = {} as Post
-    userInfo = {} as User
+    author = {} as User
+    postList = [] as Post[]
   }
+
   return {
     props: {
       postContent, // will be passed to the page component as props
-      userInfo,
+      author,
+      postList,
     },
   }
 }

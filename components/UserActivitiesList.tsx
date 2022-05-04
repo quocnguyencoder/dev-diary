@@ -4,9 +4,10 @@ import { RiChat1Line, RiFileList3Line, RiHashtag } from 'react-icons/ri'
 
 interface Props {
   postsNum: number
+  commentNum: number
 }
 
-const UserActivitiesList = ({ postsNum }: Props) => {
+const UserActivitiesList = ({ postsNum, commentNum }: Props) => {
   return (
     <List
       bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
@@ -27,7 +28,7 @@ const UserActivitiesList = ({ postsNum }: Props) => {
       </ListItem>
       <ListItem>
         <ListIcon as={RiChat1Line} boxSize="1.5em" />
-        {'10 comments written'}
+        {`${commentNum} comments written`}
       </ListItem>
     </List>
   )

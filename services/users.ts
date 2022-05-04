@@ -22,6 +22,23 @@ const queryByUsername = async (username: string) => {
   return result.hits.hits
 }
 
+const getUserByUserID = async (userID: string) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_excludes: 'password',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: [userID],
+          },
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
+}
+
 const queryCommentator = async (userIDList: string[]) => {
   const result = await client.search<Document>({
     index: 'users',
@@ -66,6 +83,65 @@ const getUserByUsername = async (username: string) => {
   return JSON.parse(JSON.stringify(result[0])) as User
 }
 
+const updateUserPosts = async (userID: string, postID: string) => {
+  const result = await client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: 'ctx._source.posts.add(params.postID)',
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+  return result
+}
+
+const updateUserComments = async (userID: string, commentID: string) => {
+  const result = await client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: 'ctx._source.comments.add(params.commentID)',
+      lang: 'painless',
+      params: {
+        commentID: commentID,
+      },
+    },
+  })
+  return result
+}
+
+const savedPosts = (userID: string, postID: string) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: 'ctx._source.savedPosts.add(params.postID)',
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+}
+
+const removeSavedPosts = (userID: string, postID: string) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source:
+        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) }',
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+}
+
 const getUsersInfoByIDList = async (idList: string[]) => {
   const result = await queryByIDList(idList)
   return JSON.parse(JSON.stringify(result)) as User[]
@@ -76,5 +152,10 @@ export {
   checkUserExists,
   getUserByUsername,
   queryCommentator,
+  getUserByUserID,
+  updateUserPosts,
+  updateUserComments,
+  savedPosts,
+  removeSavedPosts,
   getUsersInfoByIDList,
 }

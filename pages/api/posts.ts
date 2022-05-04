@@ -6,6 +6,7 @@ import {
   createPost,
   getPostsBySearch,
 } from '@/services/posts'
+import { updateUserPosts } from '@/services/users'
 
 type Message = {
   content: string
@@ -58,8 +59,9 @@ export default authenticated(async function handler(
           }
           data.slug = slug
           data.authorID = session.id as string
-          const dbRes = await createPost(data)
-          return res.status(201).json({ content: `${dbRes}` })
+          const postID = await createPost(data)
+          const result = await updateUserPosts(data.authorID, postID)
+          return res.status(201).json({ content: `${result}` })
         }
         return res.status(401).json({ content: 'request failed' })
       }

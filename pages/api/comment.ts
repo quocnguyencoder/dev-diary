@@ -2,7 +2,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { CommentSource } from '@/interfaces/Comment'
 import { createComment, getCommentByPostID } from '@/services/comment'
-import { queryCommentator } from '@/services/users'
+import { queryCommentator, updateUserComments } from '@/services/users'
 
 type Message = {
   content: string
@@ -41,8 +41,9 @@ export default authenticated(async function handler(
         if (session) {
           const data = req.body.data as CommentSource
           data.commentatorID = session.id as string
-          const dbRes = await createComment(data)
-          return res.status(201).json({ content: `${dbRes}` })
+          const commentID = await createComment(data)
+          const result = await updateUserComments(data.commentatorID, commentID)
+          return res.status(201).json({ content: `${result}` })
         }
 
         return res.status(401).json({ content: 'request failed' })
