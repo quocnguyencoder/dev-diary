@@ -83,7 +83,6 @@ const getUserByUsername = async (username: string) => {
   return JSON.parse(JSON.stringify(result[0])) as User
 }
 
-
 const updateUserPosts = async (userID: string, postID: string) => {
   const result = await client.update<Document>({
     index: 'users',
@@ -141,11 +140,11 @@ const removeSavedPosts = (userID: string, postID: string) => {
       },
     },
   })
+}
 
 const getUsersInfoByIDList = async (idList: string[]) => {
   const result = await queryByIDList(idList)
   return JSON.parse(JSON.stringify(result)) as User[]
-
 }
 
 export {
@@ -153,13 +152,10 @@ export {
   checkUserExists,
   getUserByUsername,
   queryCommentator,
-
   getUserByUserID,
   updateUserPosts,
   updateUserComments,
   savedPosts,
   removeSavedPosts,
-
   getUsersInfoByIDList,
-
 }
