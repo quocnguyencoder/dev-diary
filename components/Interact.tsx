@@ -18,15 +18,25 @@ const Interact = ({ postID }: Props) => {
     })
   }
 
-  const handleRemoveSavedPost = () => {
+  const handleLikePost = () => {
     fetch(`/api/users`, {
       method: 'POST',
-      body: JSON.stringify({ postID: postID, action: 'remove' }),
+      body: JSON.stringify({ postID: postID, action: 'like' }),
       headers: {
         'Content-Type': 'application/json',
       },
     })
   }
+
+  // const handleRemoveSavedPost = () => {
+  //   fetch(`/api/users`, {
+  //     method: 'POST',
+  //     body: JSON.stringify({ postID: postID, action: 'remove' }),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //   })
+  // }
 
   return (
     <VStack pl={7} pr={5}>
@@ -35,7 +45,7 @@ const Interact = ({ postID }: Props) => {
         _hover={{ color: 'red', bg: 'pink' }}
         icon={<MdFavoriteBorder size="50%" />}
         isRound
-        onClick={handleRemoveSavedPost}
+        onClick={handleLikePost}
       />
       <IconButton
         aria-label="Save post"

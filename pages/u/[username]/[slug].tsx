@@ -50,7 +50,7 @@ const PostPage = ({ postContent, author, postList }: Props) => {
             name={author._source.displayName}
             date={postContent._source.publishedAt}
             id={postContent._source.authorID}
-            username={author._source.displayName}
+            username={author._source.username}
           />
           <Heading as="h2" size="3xl">
             {postContent._source.title}

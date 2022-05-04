@@ -25,7 +25,10 @@ const Profile = ({ userInfo, userPosts, statusCode }: Props) => {
     <Container maxW="container.lg" pt="2" pb="3">
       <UserOverview userInfo={userInfo} />
       <HStack mt={3} alignItems={'top'}>
-        <UserActivitiesList postsNum={userPosts.length} />
+        <UserActivitiesList
+          postsNum={userPosts.length}
+          commentNum={userInfo._source.comments.length}
+        />
         <BlogList postsList={userPosts} usersList={[userInfo]} />
       </HStack>
     </Container>
