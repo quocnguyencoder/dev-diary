@@ -1,15 +1,6 @@
-import {
-  Heading,
-  HStack,
-  Image,
-  Link,
-  Text,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react'
-import moment from 'moment'
+import { Heading, Link, useColorModeValue, VStack } from '@chakra-ui/react'
 import BlogTags from './BlogTags'
-import generateAvatar from '@/helpers/generateAvatar'
+import StickyUserInfo from './StickyUserInfo'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
 
@@ -20,33 +11,8 @@ interface Props {
 
 const RelatedPost = ({ authorInfo, postList }: Props) => {
   return (
-    <VStack alignItems="left" w="25%">
-      <VStack
-        bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
-        spacing="1"
-        p="1%"
-        alignItems="left"
-        borderRadius={'10'}
-      >
-        <HStack>
-          <Image
-            borderRadius="full"
-            boxSize="55px"
-            src={generateAvatar(authorInfo._id)}
-            alt={`Avatar of ${authorInfo._source.displayName}`}
-          />
-          <VStack>
-            <Heading size="md">{authorInfo._source.displayName}</Heading>
-          </VStack>
-        </HStack>
-        <Heading padding="1% 0% 0% 2%" as="h6" size="xs">
-          JOINED
-        </Heading>
-        <Text paddingLeft="2%">
-          {moment(authorInfo._source.joinedDate).format('LL')}
-        </Text>
-      </VStack>
-
+    <VStack alignItems="left" w="28%">
+      <StickyUserInfo authorInfo={authorInfo} />
       <VStack
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
         pt="1%"

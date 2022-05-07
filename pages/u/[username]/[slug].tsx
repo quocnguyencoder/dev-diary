@@ -28,7 +28,7 @@ interface Props {
 
 const PostPage = ({ postContent, author, postList }: Props) => {
   return (
-    <Container maxW="8xl" pt="3" pb="3" display="flex" gap={3}>
+    <Container maxW="7xl" pt="3" pb="3" display="flex" gap={3}>
       <Interact postID={postContent._id} />
       <VStack
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
