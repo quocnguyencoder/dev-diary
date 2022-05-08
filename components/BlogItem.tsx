@@ -1,8 +1,8 @@
-import { Box, Heading, Link, Text, useColorModeValue } from '@chakra-ui/react'
-import NextLink from 'next/link'
+import { Box, Heading, Text, useColorModeValue } from '@chakra-ui/react'
 import React from 'react'
 import BlogAuthor from './BlogAuthor'
 import BlogTags from './BlogTags'
+import NextChakraLink from './NextChakraLink'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
 
@@ -43,12 +43,12 @@ const BlogItem = ({ post, userInfo }: Props) => {
             id={post._source.authorID}
             username={username}
           />
-          <Heading marginTop="1">
-            <NextLink href={`/u/${post._source.slug}`} passHref>
-              <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-                {post._source.title}
-              </Link>
-            </NextLink>
+          <Heading mt="1">
+            <NextChakraLink
+              href={`/u/${post._source.slug}`}
+              text={post._source.title}
+              color={useColorModeValue('gray.700', 'whiteAlpha.900')}
+            />
           </Heading>
           <BlogTags tags={post._source.tags} />
           <Text
