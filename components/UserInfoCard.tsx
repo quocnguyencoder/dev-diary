@@ -4,15 +4,14 @@ import {
   Heading,
   HStack,
   Image,
-  Link,
   Text,
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react'
 import moment from 'moment'
-import NextLink from 'next/link'
 import React from 'react'
 import InfoListItem from './InfoListItem'
+import NextChakraLink from './NextChakraLink'
 import generateAvatar from '@/helpers/generateAvatar'
 import { User } from '@/interfaces/User'
 
@@ -20,22 +19,20 @@ interface Props {
   authorInfo: User
 }
 
-const StickyUserInfo = ({ authorInfo }: Props) => {
+const UserInfoCard = ({ authorInfo }: Props) => {
   return (
     <VStack
       bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
       spacing="1"
       alignItems="left"
       borderRadius={'10'}
-      position="sticky"
-      top={5}
     >
       {/* User image and display name as link */}
       <HStack
         justifyContent={'start'}
         w="100%"
         borderRadius={'10'}
-        bgGradient="linear(to-b, teal.200 50%, transparent 50%)"
+        bgGradient="linear(to-b, blue.400 50%, transparent 50%)"
       >
         <Image
           borderRadius="full"
@@ -45,14 +42,11 @@ const StickyUserInfo = ({ authorInfo }: Props) => {
           alt={`Avatar of ${authorInfo._source.displayName}`}
         />
         <Heading size="md" pt={9}>
-          <NextLink href={`/u/${authorInfo._source.username}`} passHref>
-            <Link
-              textDecoration="none"
-              _hover={{ textDecoration: 'none', color: 'teal.400' }}
-            >
-              {authorInfo._source.displayName}
-            </Link>
-          </NextLink>
+          <NextChakraLink
+            href={`/u/${authorInfo._source.username}`}
+            text={authorInfo._source.displayName}
+            color={useColorModeValue('gray.700', 'whiteAlpha.900')}
+          />
         </Heading>
       </HStack>
       <VStack spacing={3} p="0.1em 0.9em 0.9em 0.9em">
@@ -65,7 +59,6 @@ const StickyUserInfo = ({ authorInfo }: Props) => {
         </Text>
         <Flex flexDirection={'column'} justifyContent={'start'} w="100%">
           <InfoListItem heading="Location" text="Ho Chi Minh, Viet Nam" />
-
           <InfoListItem
             heading="Work"
             text="Solution Architect at Daily Dev Tips"
@@ -81,4 +74,4 @@ const StickyUserInfo = ({ authorInfo }: Props) => {
   )
 }
 
-export default StickyUserInfo
+export default UserInfoCard
