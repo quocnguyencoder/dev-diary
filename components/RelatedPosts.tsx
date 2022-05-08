@@ -10,6 +10,7 @@ interface Props {
 }
 
 const RelatedPosts = ({ heading, postList }: Props) => {
+  const titleLinkColor = useColorModeValue('gray.700', 'whiteAlpha.900')
   return (
     <VStack
       bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
@@ -36,6 +37,7 @@ const RelatedPosts = ({ heading, postList }: Props) => {
                 <BlogTags tags={post._source.tags} />
               </VStack>
             }
+            color={titleLinkColor}
           />
         </React.Fragment>
       ))}

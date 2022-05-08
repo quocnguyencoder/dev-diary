@@ -3,13 +3,13 @@ import { GetServerSideProps } from 'next'
 import BlogContent from '@/components/BlogContent'
 import Comment from '@/components/Comment'
 import InteractButtons from '@/components/InteractButtons'
+import NextChakraLink from '@/components/NextChakraLink'
 import RelatedPosts from '@/components/RelatedPosts'
 import UserInfoCard from '@/components/UserInfoCard'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
 import { getPostBySlug, queryPostsBySameAuthor } from '@/services/posts'
 import { getUserByUserID } from '@/services/users'
-import NextChakraLink from '@/components/NextChakraLink'
 
 interface Props {
   postContent: Post
