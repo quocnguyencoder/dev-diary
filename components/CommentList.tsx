@@ -4,22 +4,24 @@ import { Comment } from '@/interfaces/Comment'
 import { User } from '@/interfaces/User'
 interface Props {
   commentList: Comment[]
-  commentator: User[]
+  userList: User[]
 }
 
-const CommentList = ({ commentList, commentator }: Props) => {
+const CommentList = ({ commentList, userList }: Props) => {
   return (
-    <VStack w="100%" p="1% 5% 3% 5%" gap="1em" align="left" borderRadius={'10'}>
+    <VStack align="left">
       {commentList.map((comment) => {
-        const userInfo = commentator.filter(
+        const userInfo = userList.find(
           (user) => comment._source.commentatorID === user._id,
-        )[0]
+        )
         return (
-          <CommentBlock
-            key={`commentator-${comment._id}`}
-            userInfo={userInfo}
-            comment={comment}
-          />
+          userInfo && (
+            <CommentBlock
+              key={`cmt-${comment._id}`}
+              userInfo={userInfo}
+              comment={comment}
+            />
+          )
         )
       })}
     </VStack>

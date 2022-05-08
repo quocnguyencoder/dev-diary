@@ -1,7 +1,7 @@
 import { Box, Container, useColorModeValue, VStack } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next'
 import BlogContent from '@/components/BlogContent'
-import Comment from '@/components/Comment'
+import CommentSection from '@/components/CommentSection'
 import InteractButtons from '@/components/InteractButtons'
 import NextChakraLink from '@/components/NextChakraLink'
 import RelatedPosts from '@/components/RelatedPosts'
@@ -29,11 +29,10 @@ const PostPage = ({ postContent, author, postList }: Props) => {
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
         borderRadius={'10'}
         boxShadow={'0 0 1px'}
-        alignItems="left"
         flex={1}
       >
         <BlogContent postContent={postContent} author={author} />
-        <Comment postID={postContent._id} />
+        <CommentSection postID={postContent._id} />
       </VStack>
       {/* Right-side contents */}
       <Box w="28%" display={{ base: 'none', md: 'block' }}>
