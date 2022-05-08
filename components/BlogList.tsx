@@ -5,15 +5,15 @@ import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
 
 interface Props {
-  postsList: Post[]
-  usersList: User[]
+  postList: Post[]
+  userList: User[]
 }
 
-const BlogList = ({ postsList, usersList }: Props) => {
+const BlogList = ({ postList, userList }: Props) => {
   return (
     <VStack flex={1}>
-      {postsList.map((post) => {
-        const userInfo = usersList.filter(
+      {postList.map((post) => {
+        const userInfo = userList.filter(
           (user) => user._id === post._source.authorID,
         )
         return (

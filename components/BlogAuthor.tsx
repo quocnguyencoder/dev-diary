@@ -1,7 +1,13 @@
-import { HStack, Image, Link, Text, VStack } from '@chakra-ui/react'
+import {
+  HStack,
+  Image,
+  Text,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react'
 import moment from 'moment'
-import NextLink from 'next/link'
 import React from 'react'
+import NextChakraLink from './NextChakraLink'
 import generateAvatar from '@/helpers/generateAvatar'
 interface BlogAuthorProps {
   date: string
@@ -26,11 +32,11 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
       />
       <VStack alignItems={'left'} spacing="-0.5">
         <Text fontWeight="600">
-          <NextLink href={`/u/${username}`} passHref>
-            <Link textDecoration="none" _hover={{ textDecoration: 'none' }}>
-              {name}
-            </Link>
-          </NextLink>
+          <NextChakraLink
+            href={`/u/${username}`}
+            text={name}
+            color={useColorModeValue('gray.700', 'whiteAlpha.900')}
+          />
         </Text>
         <Text fontSize="xs">{`${moment(date).format('LL')} (${moment(
           date,

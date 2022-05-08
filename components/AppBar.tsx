@@ -5,7 +5,6 @@ import {
   Button,
   Flex,
   HStack,
-  Link,
   Menu,
   MenuButton,
   MenuDivider,
@@ -16,8 +15,8 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { signOut, useSession } from 'next-auth/react'
-import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import NextChakraLink from './NextChakraLink'
 import SearchBar from './SearchBar'
 import generateAvatar from '@/helpers/generateAvatar'
 
@@ -25,6 +24,7 @@ export default function AppBar() {
   const { colorMode, toggleColorMode } = useColorMode()
   const router = useRouter()
   const { data: session } = useSession()
+  const linkColor = useColorModeValue('gray.700', 'whiteAlpha.900')
 
   return (
     <>
@@ -75,12 +75,16 @@ export default function AppBar() {
                   </MenuButton>
                   <MenuList>
                     <MenuItem>
-                      <NextLink href={`/u/${session.username}`} passHref>
-                        <Link>
-                          <Text>{`${session.displayName}`}</Text>
-                          <Text>{`@${session.username}`}</Text>
-                        </Link>
-                      </NextLink>
+                      <NextChakraLink
+                        href={`/u/${session.username}`}
+                        text={
+                          <>
+                            <Text>{`${session.displayName}`}</Text>
+                            <Text>{`@${session.username}`}</Text>
+                          </>
+                        }
+                        color={linkColor}
+                      />
                     </MenuItem>
                     <MenuDivider />
                     <MenuItem>Settings</MenuItem>
@@ -92,14 +96,18 @@ export default function AppBar() {
             ) : (
               <HStack spacing={5} display={{ base: 'none', md: 'block' }}>
                 <Button variant="link">
-                  <NextLink href="/login" passHref>
-                    <Link>Log in</Link>
-                  </NextLink>
+                  <NextChakraLink
+                    href="/login"
+                    text="Login"
+                    color={linkColor}
+                  />
                 </Button>
                 <Button colorScheme="teal" variant="outline">
-                  <NextLink href="/signup" passHref>
-                    <Link>Create account</Link>
-                  </NextLink>
+                  <NextChakraLink
+                    href="/signup"
+                    text="Create account"
+                    color={linkColor}
+                  />
                 </Button>
               </HStack>
             )}

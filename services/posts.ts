@@ -10,6 +10,7 @@ const getLatestPosts = async () => {
     body: {
       sort: [{ publishedAt: { order: 'desc' } }],
     },
+    size: 100,
   })
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
@@ -67,6 +68,7 @@ const getPostsBySearch = async (
               },
             },
           },
+          size: 100,
         })
       : await client.search<Document>({
           index: 'posts',
@@ -99,10 +101,12 @@ const getPostsBySearch = async (
           body: {
             sort: [{ publishedAt: { order: orderBy } }],
           },
+          size: 100,
         })
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
 
+// update to count api
 const countAuthorPostsBySlug = async (authorID: string, slug: string) => {
   const result = await client.search<Document>({
     index: 'posts',
@@ -181,6 +185,7 @@ const getAllUserPosts = async (userID: string) => {
     body: {
       sort: [{ publishedAt: { order: 'desc' } }],
     },
+    size: 100,
   })
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
@@ -194,5 +199,4 @@ export {
   queryPostsBySameAuthor,
   likePost,
   getAllUserPosts,
-
 }

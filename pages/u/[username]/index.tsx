@@ -29,7 +29,7 @@ const Profile = ({ userInfo, userPosts, statusCode }: Props) => {
           postsNum={userPosts.length}
           commentNum={userInfo._source.comments.length}
         />
-        <BlogList postsList={userPosts} usersList={[userInfo]} />
+        <BlogList postList={userPosts} userList={[userInfo]} />
       </HStack>
     </Container>
   )

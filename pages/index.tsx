@@ -8,17 +8,17 @@ import { getLatestPosts } from '@/services/posts'
 import { getUsersInfoByIDList } from '@/services/users'
 interface Props {
   latestPosts: Post[]
-  usersList: User[]
+  userList: User[]
 }
 
-const Home = ({ latestPosts, usersList }: Props) => {
+const Home = ({ latestPosts, userList }: Props) => {
   return (
     <HomeContext.Provider value={{ latestPosts }}>
       <Container maxW="container.md" pt="3" pb="3">
         <Heading as="h1" mb={1}>
           Latest
         </Heading>
-        <BlogList postsList={latestPosts} usersList={usersList} />
+        <BlogList postList={latestPosts} userList={userList} />
       </Container>
     </HomeContext.Provider>
   )
@@ -29,18 +29,18 @@ export default Home
 export async function getStaticProps() {
   let latestPosts: Post[]
   let idList: string[] = []
-  let usersList: User[] = []
+  let userList: User[] = []
   try {
     latestPosts = await getLatestPosts()
     idList = latestPosts.map((post) => post._source.authorID)
-    usersList = await getUsersInfoByIDList(idList)
+    userList = await getUsersInfoByIDList(idList)
   } catch {
     latestPosts = []
   }
   return {
     props: {
       latestPosts,
-      usersList,
+      userList,
     },
     // Next.js will attempt to re-generate the page:
     // - When a request comes in

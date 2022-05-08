@@ -7,7 +7,7 @@ interface Props {
   postID: string
 }
 
-const Interact = ({ postID }: Props) => {
+const InteractButtons = ({ postID }: Props) => {
   const handleSavedPost = () => {
     fetch(`/api/users`, {
       method: 'POST',
@@ -39,7 +39,7 @@ const Interact = ({ postID }: Props) => {
   // }
 
   return (
-    <VStack pl={7} pr={5}>
+    <VStack position={'sticky'} top={10} pt={20}>
       <IconButton
         aria-label="Hearts"
         _hover={{ color: 'red', bg: 'pink' }}
@@ -58,4 +58,4 @@ const Interact = ({ postID }: Props) => {
   )
 }
 
-export default Interact
+export default InteractButtons

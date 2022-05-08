@@ -21,6 +21,10 @@ const getCommentByPostID = async (postID: string) => {
         ],
       },
     },
+    body: {
+      sort: [{ commentAt: { order: 'desc' } }],
+    },
+    size: 100,
   })
   return result.hits.hits
 }
