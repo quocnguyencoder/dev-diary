@@ -58,7 +58,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
   }, [getDataUser])
 
   const hadFollowed = () => {
-    if (session && followings.indexOf(session.id as string) >= 0) return true
+    if (session && followings.indexOf(authorInfo._id) >= 0) return true
     return false
   }
 
