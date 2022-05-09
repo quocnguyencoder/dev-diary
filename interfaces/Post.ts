@@ -15,4 +15,5 @@ export interface PostSource {
   publishedAt: string
   createdAt: string
   comments: string[]
+  liked: string[]
 }

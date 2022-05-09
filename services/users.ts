@@ -39,6 +39,23 @@ const getUserByUserID = async (userID: string) => {
   return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
 }
 
+const getFollowingsOfUser = async (userID: string) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_includes: 'followings',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: [userID],
+          },
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
+}
+
 const queryCommentator = async (userIDList: string[]) => {
   const result = await client.search<Document>({
     index: 'users',
@@ -118,7 +135,8 @@ const savedPosts = (userID: string, postID: string) => {
     index: 'users',
     id: userID,
     script: {
-      source: 'ctx._source.savedPosts.add(params.postID)',
+      source:
+        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) } else {ctx._source.savedPosts.add(params.postID)}',
       lang: 'painless',
       params: {
         postID: postID,
@@ -127,16 +145,16 @@ const savedPosts = (userID: string, postID: string) => {
   })
 }
 
-const removeSavedPosts = (userID: string, postID: string) => {
+const followAuthor = (userID: string, authorID: string) => {
   client.update<Document>({
     index: 'users',
     id: userID,
     script: {
       source:
-        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) }',
+        'if (ctx._source.followings.contains(params.authorID)) { ctx._source.followings.remove(ctx._source.followings.indexOf(params.authorID)) } else {ctx._source.followings.add(params.authorID)}',
       lang: 'painless',
       params: {
-        postID: postID,
+        authorID: authorID,
       },
     },
   })
@@ -156,6 +174,7 @@ export {
   updateUserPosts,
   updateUserComments,
   savedPosts,
-  removeSavedPosts,
   getUsersInfoByIDList,
+  followAuthor,
+  getFollowingsOfUser,
 }

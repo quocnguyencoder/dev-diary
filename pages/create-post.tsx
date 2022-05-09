@@ -74,6 +74,7 @@ const CreatePost = () => {
         publishedAt: moment().toISOString(),
         createdAt: moment().toISOString(),
         comments: [],
+        liked: [],
       }
       const sendData = await fetch('/api/posts', {
         method: 'PUT',
