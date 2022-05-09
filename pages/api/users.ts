@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { User } from '@/interfaces/User'
 import { likePost } from '@/services/posts'
-import { removeSavedPosts, savedPosts } from '@/services/users'
+import { savedPosts } from '@/services/users'
 
 type Message = {
   content: string
@@ -22,8 +22,8 @@ export default async function handler(
         const action = req.body.action
         if (session)
           if (action === 'save') savedPosts(session.id as string, postID)
-          else if (action === 'like') likePost(postID, session.id as string)
-          else removeSavedPosts(session.id as string, postID)
+          else likePost(postID, session.id as string)
+
         return res.status(200).end()
       }
       default: {

@@ -159,13 +159,31 @@ const likePost = (postID: string, userID: string) => {
     index: 'posts',
     id: postID,
     script: {
-      source: 'ctx._source.liked.add(params.liked)',
+      source:
+        'if (ctx._source.liked.contains(params.liked)) { ctx._source.liked.remove(ctx._source.liked.indexOf(params.liked)) } else {ctx._source.liked.add(params.liked)}',
       lang: 'painless',
       params: {
         liked: userID,
       },
     },
   })
+}
+
+const getAmountOfLikedPostByPostID = async (postID: string) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    _source_includes: 'liked',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: [postID],
+          },
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits[0])) as Post
 }
 
 const getAllUserPosts = async (userID: string) => {
@@ -199,4 +217,5 @@ export {
   queryPostsBySameAuthor,
   likePost,
   getAllUserPosts,
+  getAmountOfLikedPostByPostID,
 }

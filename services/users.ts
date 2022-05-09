@@ -118,22 +118,8 @@ const savedPosts = (userID: string, postID: string) => {
     index: 'users',
     id: userID,
     script: {
-      source: 'ctx._source.savedPosts.add(params.postID)',
-      lang: 'painless',
-      params: {
-        postID: postID,
-      },
-    },
-  })
-}
-
-const removeSavedPosts = (userID: string, postID: string) => {
-  client.update<Document>({
-    index: 'users',
-    id: userID,
-    script: {
       source:
-        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) }',
+        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) } else {ctx._source.savedPosts.add(params.postID)}',
       lang: 'painless',
       params: {
         postID: postID,
@@ -156,6 +142,5 @@ export {
   updateUserPosts,
   updateUserComments,
   savedPosts,
-  removeSavedPosts,
   getUsersInfoByIDList,
 }

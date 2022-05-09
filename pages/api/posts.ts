@@ -4,6 +4,7 @@ import { Post, PostSource } from '@/interfaces/Post'
 import {
   countAuthorPostsBySlug,
   createPost,
+  getAmountOfLikedPostByPostID,
   getPostsBySearch,
 } from '@/services/posts'
 import { updateUserPosts } from '@/services/users'
@@ -64,6 +65,11 @@ export default authenticated(async function handler(
           return res.status(201).json({ content: `${result}` })
         }
         return res.status(401).json({ content: 'request failed' })
+      }
+      case 'POST': {
+        const postID = req.body.postID
+        const likeArray = await getAmountOfLikedPostByPostID(postID)
+        return res.status(200).json(likeArray)
       }
     }
   } catch (err) {
