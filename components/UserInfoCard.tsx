@@ -9,7 +9,8 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import moment from 'moment'
-import React from 'react'
+import { useSession } from 'next-auth/react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import InfoListItem from './InfoListItem'
 import NextChakraLink from './NextChakraLink'
 import generateAvatar from '@/helpers/generateAvatar'
@@ -20,6 +21,47 @@ interface Props {
 }
 
 const UserInfoCard = ({ authorInfo }: Props) => {
+  const [followings, setFollowings] = useState<string[]>([])
+  const { data: session, status } = useSession()
+
+  const handleFollowAuthor = (action: string) => {
+    if (status === 'authenticated') {
+      fetch(`/api/users`, {
+        method: 'POST',
+        body: JSON.stringify({ authorID: authorInfo._id, action: action }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      // wait 1 seconds for data to fully be uploaded on the server
+      setTimeout(() => {
+        getDataUser()
+      }, 1000)
+    } else {
+      alert('Please login to comment')
+    }
+  }
+
+  const getDataUser = useCallback(async () => {
+    const userFollowings = await fetch(`/api/users`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    const user = (await userFollowings.json()) as User
+    setFollowings(user._source.followings)
+  }, [])
+
+  useLayoutEffect(() => {
+    getDataUser()
+  }, [getDataUser])
+
+  const hadFollowed = () => {
+    if (session && followings.indexOf(session.id as string) >= 0) return true
+    return false
+  }
+
   return (
     <VStack
       bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
@@ -50,8 +92,12 @@ const UserInfoCard = ({ authorInfo }: Props) => {
         </Heading>
       </HStack>
       <VStack spacing={3} p="0.1em 0.9em 0.9em 0.9em">
-        <Button w="100%" colorScheme={'teal'}>
-          Follow
+        <Button
+          onClick={() => handleFollowAuthor('follow')}
+          w="100%"
+          colorScheme={'teal'}
+        >
+          {hadFollowed() ? 'Unfollow' : 'Follow'}
         </Button>
         <Text fontSize="md">
           Looking to get into development? As a full-stack developer I guide you

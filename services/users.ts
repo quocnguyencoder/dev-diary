@@ -39,6 +39,23 @@ const getUserByUserID = async (userID: string) => {
   return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
 }
 
+const getFollowingsOfUser = async (userID: string) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_includes: 'followings',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: [userID],
+          },
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
+}
+
 const queryCommentator = async (userIDList: string[]) => {
   const result = await client.search<Document>({
     index: 'users',
@@ -128,6 +145,21 @@ const savedPosts = (userID: string, postID: string) => {
   })
 }
 
+const followAuthor = (userID: string, authorID: string) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source:
+        'if (ctx._source.followings.contains(params.authorID)) { ctx._source.followings.remove(ctx._source.followings.indexOf(params.authorID)) } else {ctx._source.followings.add(params.authorID)}',
+      lang: 'painless',
+      params: {
+        authorID: authorID,
+      },
+    },
+  })
+}
+
 const getUsersInfoByIDList = async (idList: string[]) => {
   const result = await queryByIDList(idList)
   return JSON.parse(JSON.stringify(result)) as User[]
@@ -143,4 +175,6 @@ export {
   updateUserComments,
   savedPosts,
   getUsersInfoByIDList,
+  followAuthor,
+  getFollowingsOfUser,
 }

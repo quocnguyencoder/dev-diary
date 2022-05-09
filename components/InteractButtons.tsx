@@ -1,9 +1,9 @@
-import { IconButton, VStack } from '@chakra-ui/react'
+import { IconButton, Text, VStack } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import { useCallback, useLayoutEffect, useState } from 'react'
 import { FaRegBookmark } from 'react-icons/fa'
 import { MdFavoriteBorder } from 'react-icons/md'
 import { Post } from '@/interfaces/Post'
-import { useSession } from 'next-auth/react'
 
 interface Props {
   postID: string
@@ -63,7 +63,9 @@ const InteractButtons = ({ postID }: Props) => {
         isRound
         onClick={() => handleActionPost('like')}
       />
-      <p>{likedList.length}</p>
+      <Text as="b" fontSize="sm">
+        {likedList.length}
+      </Text>
       <IconButton
         aria-label="Save post"
         _hover={{ color: 'blue', bg: '#ccffee' }}
