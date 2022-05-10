@@ -24,19 +24,23 @@ const UserInfoCard = ({ authorInfo }: Props) => {
   const [followings, setFollowings] = useState<string[]>([])
   const { data: session, status } = useSession()
 
-  const handleFollowAuthor = (action: string) => {
+  const handleFollowAuthor = async () => {
     if (status === 'authenticated') {
-      fetch(`/api/users`, {
+      const res = await fetch(`/api/users`, {
         method: 'POST',
-        body: JSON.stringify({ authorID: authorInfo._id, action: action }),
+        body: JSON.stringify({ authorID: authorInfo._id, action: 'follow' }),
         headers: {
           'Content-Type': 'application/json',
         },
       })
-      // wait 1 seconds for data to fully be uploaded on the server
-      setTimeout(() => {
-        getDataUser()
-      }, 1000)
+      if (res.status === 200) {
+        // wait 1 seconds for data to fully be uploaded on the server
+        setTimeout(() => {
+          getDataUser()
+        }, 1000)
+      } else {
+        alert('Something went wrong')
+      }
     } else {
       alert('Please login to comment')
     }
@@ -57,10 +61,8 @@ const UserInfoCard = ({ authorInfo }: Props) => {
     getDataUser()
   }, [getDataUser])
 
-  const hadFollowed = () => {
-    if (session && followings.indexOf(authorInfo._id) >= 0) return true
-    return false
-  }
+  const isFollowed =
+    session && followings.indexOf(authorInfo._id) >= 0 ? true : false
 
   return (
     <VStack
@@ -93,11 +95,11 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       </HStack>
       <VStack spacing={3} p="0.1em 0.9em 0.9em 0.9em">
         <Button
-          onClick={() => handleFollowAuthor('follow')}
+          onClick={() => handleFollowAuthor()}
           w="100%"
-          colorScheme={'teal'}
+          colorScheme={isFollowed ? 'gray' : 'teal'}
         >
-          {hadFollowed() ? 'Unfollow' : 'Follow'}
+          {isFollowed ? 'Unfollow' : 'Follow'}
         </Button>
         <Text fontSize="md">
           Looking to get into development? As a full-stack developer I guide you
