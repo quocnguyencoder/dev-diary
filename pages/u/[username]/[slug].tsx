@@ -8,17 +8,29 @@ import RelatedPosts from '@/components/RelatedPosts'
 import UserInfoCard from '@/components/UserInfoCard'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
-import { getAuthorRelatedPosts, getPostBySlug } from '@/services/posts'
+import {
+  getAuthorRelatedPosts,
+  getOthersRelatedPosts,
+  getPostBySlug,
+} from '@/services/posts'
 import { getUserByUserID } from '@/services/users'
 
 interface Props {
   postContent: Post
   author: User
   authorRelatedPosts: Post[]
+  othersRelatedPosts: Post[]
 }
 
-const PostPage = ({ postContent, author, authorRelatedPosts }: Props) => {
+const PostPage = ({
+  postContent,
+  author,
+  authorRelatedPosts,
+  othersRelatedPosts,
+}: Props) => {
   const userRelatedPostsLinkColor = useColorModeValue('blue.600', 'blue.400')
+  const hasRelatedPosts = (result: Post[]) =>
+    result.length !== 0 ? true : false
 
   return (
     <Container maxW="7xl" pt="3" pb="3" display="flex" gap={3}>
@@ -40,7 +52,7 @@ const PostPage = ({ postContent, author, authorRelatedPosts }: Props) => {
       <Box w="28%" display={{ base: 'none', md: 'block' }}>
         <VStack>
           <UserInfoCard authorInfo={author} />
-          {authorRelatedPosts.length !== 0 && (
+          {hasRelatedPosts(authorRelatedPosts) && (
             <RelatedPosts
               heading={
                 <>
@@ -55,11 +67,12 @@ const PostPage = ({ postContent, author, authorRelatedPosts }: Props) => {
               postList={authorRelatedPosts}
             />
           )}
-
-          {/* <RelatedPosts
-            heading={'Maybe you like'}
-            postList={authorRelatedPosts}
-          /> */}
+          {hasRelatedPosts(othersRelatedPosts) && (
+            <RelatedPosts
+              heading={'Maybe you like'}
+              postList={othersRelatedPosts}
+            />
+          )}
         </VStack>
       </Box>
     </Container>
@@ -72,12 +85,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let postContent = {} as Post
   let author = {} as User
   let authorRelatedPosts = [] as Post[]
+  let othersRelatedPosts = [] as Post[]
 
   try {
     // slug -> username => data
     postContent = await getPostBySlug(`${slug}`)
     author = await getUserByUserID(postContent._source.authorID)
     authorRelatedPosts = await getAuthorRelatedPosts(postContent)
+    othersRelatedPosts = await getOthersRelatedPosts(postContent)
   } catch (err) {
     console.error(err)
   }
@@ -88,6 +103,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       postContent,
       author,
       authorRelatedPosts,
+      othersRelatedPosts,
     },
   }
 }

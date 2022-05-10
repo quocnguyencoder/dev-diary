@@ -249,6 +249,39 @@ const getAuthorRelatedPosts = async (currentPost: Post) => {
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
 
+const getOthersRelatedPosts = async (currentPost: Post) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        // similar title or same tag posts should have high score
+        should: [
+          {
+            match: {
+              title: `${currentPost._source.title}`,
+            },
+          },
+          {
+            terms: {
+              tags: currentPost._source.tags,
+            },
+          },
+        ],
+        // exclude current author posts from result
+        must_not: [
+          {
+            term: {
+              'authorID.keyword': `${currentPost._source.authorID}`,
+            },
+          },
+        ],
+      },
+    },
+    size: 3,
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -260,4 +293,5 @@ export {
   getAllUserPosts,
   getAmountOfLikedPostByPostID,
   getAuthorRelatedPosts,
+  getOthersRelatedPosts,
 }
