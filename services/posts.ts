@@ -33,79 +33,6 @@ const getPostBySlug = async (slug: string) => {
   return JSON.parse(JSON.stringify(result.hits.hits[0])) as Post
 }
 
-const getPostsBySearch = async (
-  searchTerm: string,
-  filterBy: string,
-  orderBy: string,
-) => {
-  const result =
-    orderBy !== 'asc' && orderBy !== 'desc'
-      ? await client.search<Document>({
-          index: 'posts',
-          query: {
-            bool: {
-              must: [
-                {
-                  query_string: {
-                    query: `${searchTerm}`,
-                    fields: ['content', 'description', 'title', 'tags'],
-                  },
-                },
-                {
-                  query_string: {
-                    query: filterBy,
-                    fields: ['authorID'],
-                  },
-                },
-              ],
-              should: {
-                query_string: {
-                  query: `${searchTerm}`,
-                  fields: ['content', 'description', 'title', 'tags'],
-                  type: 'phrase',
-                  phrase_slop: 10,
-                },
-              },
-            },
-          },
-          size: 100,
-        })
-      : await client.search<Document>({
-          index: 'posts',
-          query: {
-            bool: {
-              must: [
-                {
-                  query_string: {
-                    query: `${searchTerm}`,
-                    fields: ['content', 'description', 'title', 'tags'],
-                  },
-                },
-                {
-                  query_string: {
-                    query: filterBy,
-                    fields: ['authorID'],
-                  },
-                },
-              ],
-              should: {
-                query_string: {
-                  query: `${searchTerm}`,
-                  fields: ['content', 'description', 'title', 'tags'],
-                  type: 'phrase',
-                  phrase_slop: 10,
-                },
-              },
-            },
-          },
-          body: {
-            sort: [{ publishedAt: { order: orderBy } }],
-          },
-          size: 100,
-        })
-  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
-}
-
 // update to count api
 const countAuthorPostsBySlug = async (authorID: string, slug: string) => {
   const result = await client.search<Document>({
@@ -282,16 +209,59 @@ const getOthersRelatedPosts = async (currentPost: Post) => {
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
 
+const searchPosts = async (
+  searchTerm: string,
+  filterBy: string,
+  orderBy: string,
+) => {
+  const focusFields =
+    filterBy === 'Tags' ? ['tags'] : ['title^3', 'description^2', 'tags']
+  const filterUser = filterBy === 'tags' ? '*' : filterBy
+  const userOnlyObj =
+    filterBy !== 'Tags' && filterBy !== '*'
+      ? ({
+          term: {
+            'authorID.keyword': `${filterUser}`,
+          },
+        } as any)
+      : undefined
+  const orderObj =
+    orderBy !== ''
+      ? ({
+          sort: [{ publishedAt: { order: orderBy } }],
+        } as any)
+      : undefined
+  const results = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        must: [
+          userOnlyObj,
+          {
+            query_string: {
+              query: `${searchTerm}`,
+              fields: focusFields,
+            },
+          },
+        ],
+      },
+    },
+    body: orderObj,
+    size: 100,
+  })
+  return JSON.parse(JSON.stringify(results.hits.hits)) as Post[]
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
   createPost,
   countAuthorPostsBySlug,
-  getPostsBySearch,
   queryPostsBySameAuthor,
   likePost,
   getAllUserPosts,
   getAmountOfLikedPostByPostID,
   getAuthorRelatedPosts,
   getOthersRelatedPosts,
+  searchPosts,
 }

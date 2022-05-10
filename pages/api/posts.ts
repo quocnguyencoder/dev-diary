@@ -1,13 +1,14 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
+import { SearchResult } from '@/interfaces/SearchResult'
 import {
   countAuthorPostsBySlug,
   createPost,
   getAmountOfLikedPostByPostID,
-  getPostsBySearch,
+  searchPosts,
 } from '@/services/posts'
-import { updateUserPosts } from '@/services/users'
+import { getUsersInfoByIDList, updateUserPosts } from '@/services/users'
 
 type Message = {
   content: string
@@ -33,7 +34,7 @@ const authenticated =
 
 export default authenticated(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Message | Post[] | Post>,
+  res: NextApiResponse<Message | Post[] | Post | SearchResult>,
 ) {
   const method = req.method
   try {
@@ -42,12 +43,14 @@ export default authenticated(async function handler(
         const query = req.query.q
         const filterBy = req.query.filter || '*'
         const orderBy = req.query.order || ''
-        const data = await getPostsBySearch(
+        const results = await searchPosts(
           `${query}`,
           `${filterBy}`,
           `${orderBy}`,
         )
-        return res.status(200).json(data)
+        const idList = results.map((post) => post._source.authorID)
+        const userList = await getUsersInfoByIDList(idList)
+        return res.status(200).json({ results: results, userList: userList })
       }
       case 'PUT': {
         const session = await getSession({ req })
