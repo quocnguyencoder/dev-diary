@@ -13,6 +13,7 @@ type Message = {
   content: string
 }
 
+//authenticate user
 const authenticated =
   (fn: NextApiHandler) =>
   async (
@@ -31,6 +32,7 @@ const authenticated =
     }
   }
 
+  //handle posts
 export default authenticated(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Message | Post[] | Post>,
