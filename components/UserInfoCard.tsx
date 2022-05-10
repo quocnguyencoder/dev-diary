@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { useSession } from 'next-auth/react'
-import React, { useCallback, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import InfoListItem from './InfoListItem'
 import NextChakraLink from './NextChakraLink'
 import generateAvatar from '@/helpers/generateAvatar'
@@ -57,7 +57,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
     setFollowings(user._source.followings)
   }, [])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getDataUser()
   }, [getDataUser])
 

@@ -1,6 +1,6 @@
 import { IconButton, Text, VStack } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { FaRegBookmark } from 'react-icons/fa'
 import { MdFavoriteBorder } from 'react-icons/md'
 import { Post } from '@/interfaces/Post'
@@ -47,7 +47,7 @@ const InteractButtons = ({ postID }: Props) => {
     setLikedList(postData._source.liked)
   }, [postID])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getAmountOfLike()
   }, [getAmountOfLike])
 
