@@ -17,6 +17,7 @@ export default async function handler(
   try {
     switch (method) {
       case 'POST': {
+        //take data from usersource
         const data = req.body.data as UserSource
         // TODO: make data validate function
         if (validatedLogin(data.username, data.password)) {
@@ -24,6 +25,7 @@ export default async function handler(
           if (dataValidated) {
             let userExists
             try {
+              //check user exist
               userExists = await checkUserExists(data.username)
             } catch {
               userExists = false
