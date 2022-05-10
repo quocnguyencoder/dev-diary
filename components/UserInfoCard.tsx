@@ -61,7 +61,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
     getDataUser()
   }, [getDataUser])
 
-  const isFollowed =
+  const isFollowing =
     session && followings.indexOf(authorInfo._id) >= 0 ? true : false
 
   return (
@@ -97,9 +97,9 @@ const UserInfoCard = ({ authorInfo }: Props) => {
         <Button
           onClick={() => handleFollowAuthor()}
           w="100%"
-          colorScheme={isFollowed ? 'gray' : 'teal'}
+          colorScheme={isFollowing ? 'gray' : 'teal'}
         >
-          {isFollowed ? 'Unfollow' : 'Follow'}
+          {isFollowing ? 'Unfollow' : 'Follow'}
         </Button>
         <Text fontSize="md">
           Looking to get into development? As a full-stack developer I guide you

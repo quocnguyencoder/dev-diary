@@ -13,19 +13,23 @@ const InteractButtons = ({ postID }: Props) => {
   const { data: session, status } = useSession()
   const [likedList, setLikedList] = useState<string[]>([])
 
-  const handleActionPost = (action: string) => {
+  const handleActionPost = async (action: string) => {
     if (status === 'authenticated') {
-      fetch(`/api/users`, {
+      const res = await fetch(`/api/users`, {
         method: 'POST',
         body: JSON.stringify({ postID: postID, action: action }),
         headers: {
           'Content-Type': 'application/json',
         },
       })
-      // wait 1 seconds for data to fully be uploaded on the server
-      setTimeout(() => {
-        getAmountOfLike()
-      }, 1000)
+      if (res.status === 200) {
+        // wait 1 seconds for data to fully be uploaded on the server
+        setTimeout(() => {
+          getAmountOfLike()
+        }, 1000)
+      } else {
+        alert('Something went wrong')
+      }
     } else {
       alert('Please login to comment')
     }
@@ -47,10 +51,8 @@ const InteractButtons = ({ postID }: Props) => {
     getAmountOfLike()
   }, [getAmountOfLike])
 
-  const hadInteracted = () => {
-    if (session && likedList.indexOf(session.id as string) >= 0) return true
-    return false
-  }
+  const liked =
+    session && likedList.indexOf(session.id as string) >= 0 ? true : false
 
   return (
     <VStack position={'sticky'} top={10} pt={20}>
@@ -58,8 +60,8 @@ const InteractButtons = ({ postID }: Props) => {
         aria-label="Hearts"
         _hover={{ color: 'red', bg: 'pink' }}
         icon={<MdFavoriteBorder size="50%" />}
-        color={hadInteracted() ? 'red' : 'inherit'}
-        bg={hadInteracted() ? 'pink' : 'gray.400'}
+        color={liked ? 'red' : 'inherit'}
+        bg={liked ? 'pink' : 'gray.400'}
         isRound
         onClick={() => handleActionPost('like')}
       />
