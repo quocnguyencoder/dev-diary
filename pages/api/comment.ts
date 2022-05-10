@@ -8,6 +8,7 @@ type Message = {
   content: string
 }
 
+//authemticate user
 const authenticated =
   (fn: NextApiHandler) =>
   async (req: NextApiRequest, res: NextApiResponse<Message>) => {
@@ -23,6 +24,7 @@ const authenticated =
     }
   }
 
+  //handle comment 
 export default authenticated(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Message | CommentSource[]>,
