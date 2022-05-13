@@ -8,6 +8,7 @@ import {
   getFollowingsOfUser,
   savedPosts,
 } from '@/services/users'
+import { likeComment } from '@/services/comment'
 
 type Message = {
   content: string
@@ -35,10 +36,13 @@ export default async function handler(
         const postID = req.body.postID
         const action = req.body.action
         const authorID = req.body.authorID
+        const commentID = req.body.commentID
         if (session)
           if (action === 'save') savedPosts(session.id as string, postID)
           else if (action === 'like') likePost(postID, session.id as string)
-          else followAuthor(session.id as string, authorID)
+          else if (action === 'follow')
+            followAuthor(session.id as string, authorID)
+          else likeComment(commentID, session.id as string)
 
         return res.status(200).end()
       }

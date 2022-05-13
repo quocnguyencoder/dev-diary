@@ -53,7 +53,11 @@ const CommentSection = ({ postID }: Props) => {
         </Heading>
         <CommentInput postID={postID} updateFunction={getAllCommentsData} />
         {commentList.length > 0 && (
-          <CommentList commentList={commentList} userList={userList} />
+          <CommentList
+            commentList={commentList}
+            userList={userList}
+            updateFunction={getAllCommentsData}
+          />
         )}
       </VStack>
     </>

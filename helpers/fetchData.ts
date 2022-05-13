@@ -34,6 +34,16 @@ const editUserProfile = async (profile: any) =>
     },
   })
 
+const likeComment = async (commentID: string, action: string) => {
+  await fetch(`/api/users`, {
+    method: 'POST',
+    body: JSON.stringify({ commentID: commentID, action: action }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
 const isSuccess = (response: Response, expectedStatus: number) =>
   response.status === expectedStatus ? true : false
 
@@ -43,4 +53,5 @@ export {
   uploadComment,
   isSuccess,
   editUserProfile,
+  likeComment,
 }
