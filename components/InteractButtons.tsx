@@ -27,7 +27,7 @@ const InteractButtons = ({ postID }: Props) => {
         getAmountOfLike()
       }, 1000)
     } else {
-      alert('Please login to comment')
+      alert(`Please login to ${action}`)
     }
   }
 

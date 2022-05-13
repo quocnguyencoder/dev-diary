@@ -2,7 +2,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { User } from '@/interfaces/User'
 import { likePost } from '@/services/posts'
-import { followAuthor, getFollowingsOfUser, savedPosts } from '@/services/users'
+import {
+  editUserProfile,
+  followAuthor,
+  getFollowingsOfUser,
+  savedPosts,
+} from '@/services/users'
 
 type Message = {
   content: string
@@ -36,6 +41,26 @@ export default async function handler(
           else followAuthor(session.id as string, authorID)
 
         return res.status(200).end()
+      }
+      case 'PUT': {
+        const session = await getSession({ req })
+        if (session) {
+          const displayName = req.body.displayName
+          const email = req.body.email
+          const bio = req.body.bio
+          const work = req.body.work
+          const education = req.body.education
+          editUserProfile(
+            session.id as string,
+            displayName,
+            email,
+            bio,
+            work,
+            education,
+          )
+          return res.status(200).end()
+        }
+        return res.status(401).json({ content: 'request failed' })
       }
       default: {
         return res.status(405).json({ content: 'Method not supported' })

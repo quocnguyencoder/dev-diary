@@ -165,6 +165,27 @@ const getUsersInfoByIDList = async (idList: string[]) => {
   return JSON.parse(JSON.stringify(result)) as User[]
 }
 
+const editUserProfile = (
+  userID: string,
+  displayName: string,
+  email: string,
+  bio: string,
+  work: string,
+  education: string,
+) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    doc: {
+      displayName: displayName,
+      email: email,
+      bio: bio,
+      work: work,
+      education: education,
+    },
+  })
+}
+
 export {
   createUser,
   checkUserExists,
@@ -177,4 +198,5 @@ export {
   getUsersInfoByIDList,
   followAuthor,
   getFollowingsOfUser,
+  editUserProfile,
 }

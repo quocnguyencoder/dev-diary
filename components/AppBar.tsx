@@ -87,7 +87,13 @@ export default function AppBar() {
                       />
                     </MenuItem>
                     <MenuDivider />
-                    <MenuItem>Settings</MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        router.push(`/u/${session.username}/settings`)
+                      }
+                    >
+                      Settings
+                    </MenuItem>
                     <MenuDivider />
                     <MenuItem onClick={() => signOut()}>Log out</MenuItem>
                   </MenuList>

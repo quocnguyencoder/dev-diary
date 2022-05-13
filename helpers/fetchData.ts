@@ -25,7 +25,22 @@ const uploadComment = async (commentInfo: CommentSource) =>
     },
   })
 
+const editUserProfile = async (profile: any) =>
+  await fetch(`/api/users`, {
+    method: 'PUT',
+    body: JSON.stringify(profile),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
 const isSuccess = (response: Response, expectedStatus: number) =>
   response.status === expectedStatus ? true : false
 
-export { getPostComments, getCommentUsersInfo, uploadComment, isSuccess }
+export {
+  getPostComments,
+  getCommentUsersInfo,
+  uploadComment,
+  isSuccess,
+  editUserProfile,
+}

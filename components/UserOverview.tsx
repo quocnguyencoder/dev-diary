@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { BsGithub } from 'react-icons/bs'
 import { FiMail } from 'react-icons/fi'
@@ -23,10 +24,14 @@ interface Props {
 
 const UserOverview = ({ userInfo }: Props) => {
   const { data: session } = useSession()
+  const router = useRouter()
   const isCurrentUser = session && session.id === userInfo._id
   const bio =
     userInfo._source.bio === '' ? '404 bio not found' : userInfo._source.bio
 
+  const handleEditProfile = () => {
+    router.push(`/u/${userInfo._source.username}/settings`)
+  }
   const backgroundColor = useColorModeValue('whiteAlpha.900', 'gray.700')
   return (
     <VStack
@@ -50,7 +55,9 @@ const UserOverview = ({ userInfo }: Props) => {
         />
 
         {isCurrentUser ? (
-          <Button colorScheme="teal">Edit Profile</Button>
+          <Button colorScheme="teal" onClick={handleEditProfile}>
+            Edit Profile
+          </Button>
         ) : (
           <Button colorScheme="teal">Follow</Button>
         )}

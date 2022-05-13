@@ -38,19 +38,21 @@ const UserInfoCard = ({ authorInfo }: Props) => {
         getDataUser()
       }, 1000)
     } else {
-      alert('Please login to comment')
+      alert(`Please login to ${action} ${authorInfo._source.displayName}`)
     }
   }
 
   const getDataUser = useCallback(async () => {
-    const userFollowings = await fetch(`/api/users`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    const user = (await userFollowings.json()) as User
-    setFollowings(user._source.followings)
+    if (session) {
+      const userFollowings = await fetch(`/api/users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const user = (await userFollowings.json()) as User
+      setFollowings(user._source.followings)
+    }
   }, [])
 
   useLayoutEffect(() => {
@@ -68,6 +70,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       spacing="1"
       alignItems="left"
       borderRadius={'10'}
+      w="100%"
     >
       {/* User image and display name as link */}
       <HStack
@@ -99,17 +102,10 @@ const UserInfoCard = ({ authorInfo }: Props) => {
         >
           {hadFollowed() ? 'Unfollow' : 'Follow'}
         </Button>
-        <Text fontSize="md">
-          Looking to get into development? As a full-stack developer I guide you
-          on this journey and give you bite sized tips every single day
-        </Text>
+        <Text fontSize="md">{authorInfo._source.bio}</Text>
         <Flex flexDirection={'column'} justifyContent={'start'} w="100%">
           <InfoListItem heading="Location" text="Ho Chi Minh, Viet Nam" />
-          <InfoListItem
-            heading="Work"
-            text="Solution Architect at Daily Dev Tips"
-          />
-
+          <InfoListItem heading="Work" text={authorInfo._source.work} />
           <InfoListItem
             heading="Joined"
             text={moment(authorInfo._source.joinedDate).format('LL')}
