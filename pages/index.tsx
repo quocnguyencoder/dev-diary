@@ -1,6 +1,7 @@
-import { Box, Container, Heading } from '@chakra-ui/react'
+import { Box, Container, Heading, VStack } from '@chakra-ui/react'
 import React from 'react'
 import BlogList from '@/components/BlogList'
+import FollowingList from '@/components/FollowingList'
 import NavList from '@/components/NavList'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
@@ -16,9 +17,16 @@ const Home = ({ latestPosts, userList }: Props) => {
   return (
     <HomeContext.Provider value={{ latestPosts }}>
       <Container maxW="85vw" p={'1em 0'} display="flex" gap={2}>
-        <Box w="20%" pt={4} display={{ base: 'none', md: 'block' }}>
+        <VStack
+          w="20%"
+          pt={4}
+          align="left"
+          spacing={4}
+          display={{ base: 'none', md: 'flex' }}
+        >
           <NavList />
-        </Box>
+          <FollowingList userList={userList} />
+        </VStack>
 
         <Box flex={1}>
           <Heading as="h1" mb={1}>

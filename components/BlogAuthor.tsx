@@ -1,6 +1,6 @@
 import {
+  Avatar,
   HStack,
-  Image,
   Text,
   useColorModeValue,
   VStack,
@@ -24,12 +24,7 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
 }: BlogAuthorProps) => {
   return (
     <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-      <Image
-        borderRadius="full"
-        boxSize="40px"
-        src={generateAvatar(id)}
-        alt={`Avatar of ${name}`}
-      />
+      <Avatar name={name} src={generateAvatar(id)} />
       <VStack alignItems={'left'} spacing="-0.5">
         <Text fontWeight="600">
           <NextChakraLink
