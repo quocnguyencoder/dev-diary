@@ -8,6 +8,7 @@ import {
 import moment from 'moment'
 import React from 'react'
 import NextChakraLink from './NextChakraLink'
+import * as ROUTES from '@/constants/routes'
 import generateAvatar from '@/helpers/generateAvatar'
 interface BlogAuthorProps {
   date: string
@@ -23,12 +24,12 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
   username,
 }: BlogAuthorProps) => {
   return (
-    <HStack marginTop="2" spacing="2" display="flex" alignItems="center">
-      <Avatar name={name} src={generateAvatar(id)} />
-      <VStack alignItems={'left'} spacing="-0.5">
+    <HStack mt="2" spacing="2" display="flex" align="center">
+      <Avatar maxW="40px" maxH="40px" name={name} src={generateAvatar(id)} />
+      <VStack align={'left'} spacing="-0.5">
         <Text fontWeight="600">
           <NextChakraLink
-            href={`/u/${username}`}
+            href={ROUTES.USER_PROFILE(username)}
             text={name}
             color={useColorModeValue('gray.700', 'whiteAlpha.900')}
           />
