@@ -3,6 +3,7 @@ import React from 'react'
 import BlogList from '@/components/BlogList'
 import FollowingList from '@/components/FollowingList'
 import NavList from '@/components/NavList'
+import TagList from '@/components/TagList'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
@@ -26,6 +27,7 @@ const Home = ({ latestPosts, userList }: Props) => {
         >
           <NavList />
           <FollowingList userList={userList} />
+          <TagList />
         </VStack>
 
         <Box flex={1}>

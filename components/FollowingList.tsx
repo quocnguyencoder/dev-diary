@@ -21,11 +21,11 @@ interface Props {
 const FollowingList = ({ userList }: Props) => {
   const linkColor = useColorModeValue('gray.900', 'whiteAlpha.900')
   return (
-    <Box>
-      <Heading size="md" mb={2}>
+    <Box p={2}>
+      <Heading size="md" mb={3}>
         Following
       </Heading>
-      <List spacing={2} overflow={'auto'} maxH={'20vh'}>
+      <List spacing={3} overflow={'auto'} maxH={'20vh'}>
         {userList.map((user) => (
           <ListItem key={user._id}>
             <NextChakraLink
