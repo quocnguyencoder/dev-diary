@@ -34,7 +34,6 @@ const BlogItem = ({ post, userInfo }: Props) => {
           flex="1"
           flexDirection="column"
           justifyContent="center"
-          marginTop={{ base: '3', sm: '0' }}
           gap={'1'}
         >
           <BlogAuthor
@@ -47,14 +46,14 @@ const BlogItem = ({ post, userInfo }: Props) => {
             <NextChakraLink
               href={`/u/${post._source.slug}`}
               text={post._source.title}
-              color={useColorModeValue('gray.700', 'whiteAlpha.900')}
+              color={useColorModeValue('gray.900', 'whiteAlpha.900')}
             />
           </Heading>
           <BlogTags tags={post._source.tags} />
           <Text
             as="p"
             marginTop="2"
-            color={useColorModeValue('gray.700', 'gray.200')}
+            color={useColorModeValue('gray.900', 'gray.200')}
             fontSize="lg"
           >
             {post._source.description}
