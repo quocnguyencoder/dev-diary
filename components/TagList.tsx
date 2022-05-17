@@ -8,9 +8,11 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import React from 'react'
+interface Props {
+  tags: string[]
+}
 
-const TagList = () => {
-  const tags = ['next.js', 'javascript', 'web', '.net', 'chrome', 'hello']
+const TagList = ({ tags }: Props) => {
   return (
     <Box p={2}>
       <Flex justifyContent="space-between" align="center" mb={2}>

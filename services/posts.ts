@@ -86,8 +86,10 @@ const likePost = (postID: string, userID: string) => {
     index: 'posts',
     id: postID,
     script: {
-      source:
-        'if (ctx._source.liked.contains(params.liked)) { ctx._source.liked.remove(ctx._source.liked.indexOf(params.liked)) } else {ctx._source.liked.add(params.liked)}',
+      source: `if (ctx._source.liked.contains(params.liked)) { 
+          ctx._source.liked.remove(ctx._source.liked.indexOf(params.liked)) 
+        } else {
+          ctx._source.liked.add(params.liked)}`,
       lang: 'painless',
       params: {
         liked: userID,
@@ -252,6 +254,50 @@ const searchPosts = async (
   return JSON.parse(JSON.stringify(results.hits.hits)) as Post[]
 }
 
+const getUserNewsFeed = async (followings: string[], userTags: string[]) => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      bool: {
+        // posts of following authors or tags should have high score
+        should: [
+          {
+            terms: {
+              'authorID.keyword': followings,
+            },
+          },
+          {
+            terms: {
+              tags: userTags,
+            },
+          },
+        ],
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
+const getTopPosts = async () => {
+  const result = await client.search<Document>({
+    index: 'posts',
+    query: {
+      script_score: {
+        query: {
+          match_all: {},
+        },
+        script: {
+          source: `_score 
+          + Math.log10(doc['liked.keyword'].size()
+          + doc['comments.keyword'].size() + 1 )`,
+          lang: 'painless',
+        },
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -264,4 +310,6 @@ export {
   getAuthorRelatedPosts,
   getOthersRelatedPosts,
   searchPosts,
+  getUserNewsFeed,
+  getTopPosts,
 }
