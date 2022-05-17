@@ -9,10 +9,12 @@ interface Props {
   postID: string
 }
 
+//handle interact button
 const InteractButtons = ({ postID }: Props) => {
   const { data: session, status } = useSession()
   const [likedList, setLikedList] = useState<string[]>([])
 
+  //handle post interaction
   const handleActionPost = (action: string) => {
     if (status === 'authenticated') {
       fetch(`/api/users`, {
