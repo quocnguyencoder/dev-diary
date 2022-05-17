@@ -41,6 +41,7 @@ const Home = ({ userInfo, followings }: Props) => {
         w="25%"
         h="10vh"
         display={{ base: 'none', md: 'block' }}
+        visibility="hidden"
       ></Box>
     </Container>
   )

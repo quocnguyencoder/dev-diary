@@ -288,7 +288,7 @@ const getTopPosts = async () => {
         },
         script: {
           source: `_score 
-          + Math.log10(doc['liked.keyword'].size()
+          * Math.log10(doc['liked.keyword'].size()
           + doc['comments.keyword'].size() + 1 )`,
           lang: 'painless',
         },
