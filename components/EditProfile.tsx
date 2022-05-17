@@ -40,7 +40,7 @@ const EditProfile = ({ userInfo }: Props) => {
     <VStack flex={1}>
       <VStack
         w="100%"
-        p="1% 5% 3% 5%"
+        p="3% 5%"
         gap="1em"
         align="left"
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
@@ -78,7 +78,7 @@ const EditProfile = ({ userInfo }: Props) => {
       </VStack>
       <VStack
         w="100%"
-        p="1% 5% 3% 5%"
+        p="3% 5%"
         gap="1em"
         align="left"
         bg={useColorModeValue('whiteAlpha.900', 'gray.700')}

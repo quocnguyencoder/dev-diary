@@ -35,14 +35,14 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       })
       // wait 1 seconds for data to fully be uploaded on the server
       setTimeout(() => {
-        getDataUser()
+        getUserData()
       }, 1000)
     } else {
       alert(`Please login to ${action} ${authorInfo._source.displayName}`)
     }
   }
 
-  const getDataUser = useCallback(async () => {
+  const getUserData = useCallback(async () => {
     if (session) {
       const userFollowings = await fetch(`/api/users`, {
         method: 'GET',
@@ -53,11 +53,11 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       const user = (await userFollowings.json()) as User
       setFollowings(user._source.followings)
     }
-  }, [])
+  }, [session])
 
   useLayoutEffect(() => {
-    getDataUser()
-  }, [getDataUser])
+    getUserData()
+  }, [getUserData])
 
   const hadFollowed = () => {
     if (session && followings.indexOf(authorInfo._id) >= 0) return true

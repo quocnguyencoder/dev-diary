@@ -146,18 +146,24 @@ const savedPosts = (userID: string, postID: string) => {
 }
 
 const followAuthor = (userID: string, authorID: string) => {
-  client.update<Document>({
-    index: 'users',
-    id: userID,
-    script: {
-      source:
-        'if (ctx._source.followings.contains(params.authorID)) { ctx._source.followings.remove(ctx._source.followings.indexOf(params.authorID)) } else {ctx._source.followings.add(params.authorID)}',
-      lang: 'painless',
-      params: {
-        authorID: authorID,
+  if (userID !== authorID) {
+    client.update<Document>({
+      index: 'users',
+      id: userID,
+      script: {
+        source: `if (ctx._source.followings.contains(params.authorID)) { 
+            ctx._source.followings.remove(ctx._source.followings.indexOf(params.authorID))
+           }
+           else {
+             ctx._source.followings.add(params.authorID)
+            }`,
+        lang: 'painless',
+        params: {
+          authorID: authorID,
+        },
       },
-    },
-  })
+    })
+  }
 }
 
 const getUsersInfoByIDList = async (idList: string[]) => {

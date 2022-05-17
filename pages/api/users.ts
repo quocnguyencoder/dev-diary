@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { User } from '@/interfaces/User'
+import { likeComment } from '@/services/comment'
 import { likePost } from '@/services/posts'
 import {
   editUserProfile,
@@ -8,7 +9,6 @@ import {
   getFollowingsOfUser,
   savedPosts,
 } from '@/services/users'
-import { likeComment } from '@/services/comment'
 
 type Message = {
   content: string
