@@ -1,8 +1,7 @@
-import { Box, Container, Heading, VStack } from '@chakra-ui/react'
-import React from 'react'
-import BlogList from '@/components/BlogList'
+import { Box, Container, VStack } from '@chakra-ui/react'
 import FollowingList from '@/components/FollowingList'
 import NavList from '@/components/NavList'
+import NewsFeedSection from '@/components/NewsFeedSection'
 import TagList from '@/components/TagList'
 import { HomeContext } from '@/contexts/HomeContext'
 import { Post } from '@/interfaces/Post'
@@ -31,10 +30,7 @@ const Home = ({ latestPosts, userList }: Props) => {
         </VStack>
 
         <Box flex={1}>
-          <Heading as="h1" mb={1}>
-            Latest
-          </Heading>
-          <BlogList postList={latestPosts} userList={userList} />
+          <NewsFeedSection latestPosts={latestPosts} userList={userList} />
         </Box>
         <Box
           bgColor="yellow"
