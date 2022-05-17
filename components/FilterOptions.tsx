@@ -1,4 +1,5 @@
 import { VStack } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import OptionButton from './OptionButton'
 import { filterByOptions, SearchFilterBy } from '@/types/search'
 
@@ -8,8 +9,13 @@ interface Props {
 }
 
 const FilterOptions = ({ filterBy, setFilterBy }: Props) => {
+  const { data: session, status } = useSession()
   const handleClick = (option: SearchFilterBy) => {
-    setFilterBy(option)
+    option === 'My posts only'
+      ? session && status === 'authenticated'
+        ? setFilterBy(option)
+        : alert('Please login to use this filter')
+      : setFilterBy(option)
   }
   return (
     <VStack alignItems={'flex-start'} w={'25%'}>

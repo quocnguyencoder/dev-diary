@@ -1,50 +1,71 @@
-import { Container, Heading } from '@chakra-ui/react'
-import React from 'react'
-import BlogList from '@/components/BlogList'
-import { HomeContext } from '@/contexts/HomeContext'
-import { Post } from '@/interfaces/Post'
+import { Box, Container, VStack } from '@chakra-ui/react'
+import { GetServerSideProps } from 'next'
+import { getSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
+import FollowingList from '@/components/FollowingList'
+import NavList from '@/components/NavList'
+import NewsFeedSection from '@/components/NewsFeedSection'
+import TagList from '@/components/TagList'
 import { User } from '@/interfaces/User'
-import { getLatestPosts } from '@/services/posts'
-import { getUsersInfoByIDList } from '@/services/users'
+import { getUserByUserID, getUsersInfoByIDList } from '@/services/users'
 interface Props {
-  latestPosts: Post[]
-  userList: User[]
+  userInfo: User
+  followings: User[]
 }
 
-const Home = ({ latestPosts, userList }: Props) => {
+const Home = ({ userInfo, followings }: Props) => {
+  const { data: session } = useSession()
   return (
-    <HomeContext.Provider value={{ latestPosts }}>
-      <Container maxW="container.md" pt="3" pb="3">
-        <Heading as="h1" mb={1}>
-          Latest
-        </Heading>
-        <BlogList postList={latestPosts} userList={userList} />
-      </Container>
-    </HomeContext.Provider>
+    <Container maxW="85vw" p={'1em 0'} display="flex" gap={2}>
+      <VStack
+        w="20%"
+        pt={4}
+        align="left"
+        spacing={4}
+        display={{ base: 'none', md: 'flex' }}
+      >
+        <NavList />
+        {session && userInfo._id && (
+          <>
+            <FollowingList userList={followings} />
+            <TagList tags={userInfo._source.tags} />
+          </>
+        )}
+      </VStack>
+
+      <Box flex={1}>
+        <NewsFeedSection userInfo={userInfo} />
+      </Box>
+      <Box
+        bgColor="yellow"
+        w="25%"
+        h="10vh"
+        display={{ base: 'none', md: 'block' }}
+        visibility="hidden"
+      ></Box>
+    </Container>
   )
 }
 
 export default Home
 
-export async function getStaticProps() {
-  let latestPosts: Post[]
-  let idList: string[] = []
-  let userList: User[] = []
-  try {
-    latestPosts = await getLatestPosts()
-    idList = latestPosts.map((post) => post._source.authorID)
-    userList = await getUsersInfoByIDList(idList)
-  } catch {
-    latestPosts = []
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const session = await getSession({ req })
+  let userInfo = {} as User
+  let followings = [] as User[]
+  if (session) {
+    try {
+      userInfo = await getUserByUserID(session.id as string)
+      followings = await getUsersInfoByIDList(userInfo._source.followings)
+    } catch (err) {
+      console.error(err)
+    }
   }
+
   return {
     props: {
-      latestPosts,
-      userList,
+      userInfo,
+      followings,
     },
-    // Next.js will attempt to re-generate the page:
-    // - When a request comes in
-    // - At most once every 1 hour
-    revalidate: 60, // In seconds
   }
 }

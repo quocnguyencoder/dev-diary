@@ -1,5 +1,14 @@
-import { Box, Heading, Text, useColorModeValue } from '@chakra-ui/react'
+import {
+  Button,
+  Heading,
+  HStack,
+  Text,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react'
 import React from 'react'
+import { AiOutlineHeart } from 'react-icons/ai'
+import { BiConversation } from 'react-icons/bi'
 import BlogAuthor from './BlogAuthor'
 import BlogTags from './BlogTags'
 import NextChakraLink from './NextChakraLink'
@@ -17,51 +26,60 @@ const BlogItem = ({ post, userInfo }: Props) => {
     ? userInfo._source.displayName
     : `Author's name`
   const username = hasUserInfo ? userInfo._source.username : '#'
+  const likes = post._source.liked.length
+  const comments = post._source.comments.length
   return (
-    <>
-      <Box
-        display="flex"
-        flexDirection={{ base: 'column', sm: 'row' }}
-        justifyContent="space-between"
-        bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
-        p={3}
-        borderRadius={'10'}
-        boxShadow={'0 0 1px'}
-        w={'100%'}
-      >
-        <Box
-          display="flex"
-          flex="1"
-          flexDirection="column"
-          justifyContent="center"
-          marginTop={{ base: '3', sm: '0' }}
-          gap={'1'}
-        >
-          <BlogAuthor
-            name={`${displayName}`}
-            date={post._source.publishedAt}
-            id={post._source.authorID}
-            username={username}
+    <VStack
+      bg={useColorModeValue('whiteAlpha.900', 'gray.700')}
+      p={'1% 3%'}
+      align={'left'}
+      borderRadius={'10'}
+      boxShadow={'0 0 1px'}
+      w={'100%'}
+      spacing={'0'}
+    >
+      <BlogAuthor
+        name={`${displayName}`}
+        date={post._source.publishedAt}
+        id={post._source.authorID}
+        username={username}
+      />
+      <VStack align={'left'} p={'0 7%'}>
+        <Heading fontSize="4xl">
+          <NextChakraLink
+            href={`/u/${post._source.slug}`}
+            text={post._source.title}
+            color={useColorModeValue('gray.900', 'whiteAlpha.900')}
           />
-          <Heading mt="1">
-            <NextChakraLink
-              href={`/u/${post._source.slug}`}
-              text={post._source.title}
-              color={useColorModeValue('gray.700', 'whiteAlpha.900')}
-            />
-          </Heading>
-          <BlogTags tags={post._source.tags} />
-          <Text
-            as="p"
-            marginTop="2"
-            color={useColorModeValue('gray.700', 'gray.200')}
-            fontSize="lg"
+        </Heading>
+        <BlogTags tags={post._source.tags} />
+        <Text
+          as="p"
+          color={useColorModeValue('gray.900', 'gray.200')}
+          fontSize="lg"
+        >
+          {post._source.description}
+        </Text>
+        <HStack spacing={4}>
+          <Button
+            leftIcon={<AiOutlineHeart fontSize="1.5em" />}
+            variant="unstyled"
+            fontWeight="normal"
+            display={'flex'}
           >
-            {post._source.description}
-          </Text>
-        </Box>
-      </Box>
-    </>
+            {`${likes} ${likes > 1 ? 'Reactions' : 'Reaction'}`}
+          </Button>
+          <Button
+            leftIcon={<BiConversation fontSize="1.5em" />}
+            variant="unstyled"
+            fontWeight="normal"
+            display={'flex'}
+          >
+            {`${comments} ${comments > 1 ? 'Comments' : 'Comment'}`}
+          </Button>
+        </HStack>
+      </VStack>
+    </VStack>
   )
 }
 

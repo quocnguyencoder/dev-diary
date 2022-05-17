@@ -15,6 +15,7 @@ const NextChakraLink = ({ href, text, color }: Props) => {
         textDecoration="none"
         color={color}
         _hover={{ textDecoration: 'none', color: 'teal.400' }}
+        _focus={{ outline: 0 }}
       >
         {text}
       </Link>
