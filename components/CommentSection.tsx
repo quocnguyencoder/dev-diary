@@ -18,18 +18,16 @@ const CommentSection = ({ postID }: Props) => {
   const [commentList, setCommentList] = useState<Comment[]>([])
   const [userList, setUserList] = useState<User[]>([])
 
-  //handle get all comment
   const getAllCommentsData = useCallback(async () => {
     const getCommentsResponse = await getPostComments(postID)
     let error = true
-    //check response of post comment
     if (isSuccess(getCommentsResponse, 200)) {
       const commentsData = (await getCommentsResponse.json()) as Comment[]
       const commentUserIDs = commentsData.map(
         (comment) => comment._source.commentatorID,
       )
       const filteredUserIDs = Array.from(new Set(commentUserIDs))
-      const getUsersInfoResponse = await getCommentUsersInfo(filteredUserIDs) //get info user
+      const getUsersInfoResponse = await getCommentUsersInfo(filteredUserIDs)
       if (isSuccess(getUsersInfoResponse, 200)) {
         const usersData = (await getUsersInfoResponse.json()) as User[]
         error = false

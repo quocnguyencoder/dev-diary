@@ -6,7 +6,6 @@ interface Props {
   sortBy: SearchSortBy
   setSortBy: (value: SearchSortBy) => void
 }
-//handle sort by option of user 
 const SortOptions = ({ sortBy, setSortBy }: Props) => {
   const handleClick = (option: SearchSortBy) => {
     setSortBy(option)

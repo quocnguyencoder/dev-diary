@@ -24,7 +24,6 @@ const authenticated =
     }
   }
 
-  //handle comment 
 export default authenticated(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Message | CommentSource[]>,

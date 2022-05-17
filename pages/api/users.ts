@@ -8,7 +8,6 @@ type Message = {
   content: string
 }
 
-//handle user
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Message | User>,
@@ -18,7 +17,6 @@ export default async function handler(
 
   try {
     switch (method) {
-      //handle get data user
       case 'GET': {
         const session = await getSession({ req })
         if (session) {
@@ -27,7 +25,7 @@ export default async function handler(
         }
         return res.status(401).json({ content: 'request failed' })
       }
-      //handle save post, like post, follow author
+      //handle save post, like post, like comment or follow author
       case 'POST': {
         const session = await getSession({ req })
         const postID = req.body.postID

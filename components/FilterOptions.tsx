@@ -7,7 +7,6 @@ interface Props {
   setFilterBy: (value: SearchFilterBy) => void
 }
 
-//handle filter options for search function
 const FilterOptions = ({ filterBy, setFilterBy }: Props) => {
   const handleClick = (option: SearchFilterBy) => {
     setFilterBy(option)

@@ -25,7 +25,6 @@ const UserInfoCard = ({ authorInfo }: Props) => {
   const { data: session, status } = useSession()
 
   const handleFollowAuthor = (action: string) => {
-    //check validate user
     if (status === 'authenticated') {
       fetch(`/api/users`, {
         method: 'POST',
@@ -43,7 +42,6 @@ const UserInfoCard = ({ authorInfo }: Props) => {
     }
   }
 
-  //handle get data user
   const getDataUser = useCallback(async () => {
     const userFollowings = await fetch(`/api/users`, {
       method: 'GET',

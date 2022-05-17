@@ -25,7 +25,7 @@ export default async function handler(
           if (dataValidated) {
             let userExists
             try {
-              //check user exist
+              //check if user exists
               userExists = await checkUserExists(data.username)
             } catch {
               userExists = false
@@ -33,7 +33,7 @@ export default async function handler(
             if (userExists) {
               return res.status(409).end()
             } else {
-              // has password and stored data in to elastic search
+              // hash password and stored data in to elastic search
               hash(data.password, 10, async (err, hash) => {
                 if (!err) {
                   data.password = hash

@@ -11,12 +11,11 @@ interface Props {
   updateFunction: () => void
 }
 
-//handle input comment
 const CommentInput = ({ postID, updateFunction }: Props) => {
   const { data: session, status } = useSession()
   const [commentInput, setCommentInput] = useState('')
   const handleUploadComment = async () => {
-    //check validate user
+    //upload comment only when user is authenticated
     if (status === 'authenticated') {
       const commentInfo: CommentSource = {
         commentatorID: `${session.id}`,
@@ -26,7 +25,6 @@ const CommentInput = ({ postID, updateFunction }: Props) => {
         likes: [],
         reply: [],
       }
-      //wait comment upload
       const response = await uploadComment(commentInfo)
       if (isSuccess(response, 201)) {
         // wait 1 seconds for data to fully be uploaded on the server
