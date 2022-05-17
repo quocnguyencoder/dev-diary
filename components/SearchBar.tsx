@@ -9,6 +9,7 @@ import {
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
+//handle search bar
 const SearchBar = () => {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
@@ -18,6 +19,7 @@ const SearchBar = () => {
     querySearchTerm !== undefined && setSearchTerm(querySearchTerm as string)
   }, [querySearchTerm])
 
+  //handle search function
   const gotoSearch = () =>
     router.push(`/search?q=${searchTerm}`, undefined, {
       shallow: false,
