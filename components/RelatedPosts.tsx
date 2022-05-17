@@ -9,6 +9,7 @@ interface Props {
   postList: Post[]
 }
 
+//handle relate posts by current post
 const RelatedPosts = ({ heading, postList }: Props) => {
   const titleLinkColor = useColorModeValue('gray.700', 'whiteAlpha.900')
   return (
