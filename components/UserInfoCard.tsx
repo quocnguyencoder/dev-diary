@@ -24,42 +24,45 @@ const UserInfoCard = ({ authorInfo }: Props) => {
   const [followings, setFollowings] = useState<string[]>([])
   const { data: session, status } = useSession()
 
-  const handleFollowAuthor = async () => {
+  const handleFollowAuthor = async (action: string) => {
     if (status === 'authenticated') {
       const res = await fetch(`/api/users`, {
         method: 'POST',
-        body: JSON.stringify({ authorID: authorInfo._id, action: 'follow' }),
+        body: JSON.stringify({ authorID: authorInfo._id, action: action }),
         headers: {
           'Content-Type': 'application/json',
         },
       })
+
       if (res.status === 200) {
         // wait 1 seconds for data to fully be uploaded on the server
         setTimeout(() => {
-          getDataUser()
+          getUserData()
         }, 1000)
       } else {
         alert('Something went wrong')
       }
     } else {
-      alert('Please login to comment')
+      alert(`Please login to ${action} ${authorInfo._source.displayName}`)
     }
   }
 
-  const getDataUser = useCallback(async () => {
-    const userFollowings = await fetch(`/api/users`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    const user = (await userFollowings.json()) as User
-    setFollowings(user._source.followings)
-  }, [])
+  const getUserData = useCallback(async () => {
+    if (session) {
+      const userFollowings = await fetch(`/api/users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const user = (await userFollowings.json()) as User
+      setFollowings(user._source.followings)
+    }
+  }, [session])
 
   useEffect(() => {
-    getDataUser()
-  }, [getDataUser])
+    getUserData()
+  }, [getUserData])
 
   const isFollowing =
     session && followings.indexOf(authorInfo._id) >= 0 ? true : false
@@ -70,6 +73,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       spacing="1"
       alignItems="left"
       borderRadius={'10'}
+      w="100%"
     >
       {/* User image and display name as link */}
       <HStack
@@ -95,23 +99,16 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       </HStack>
       <VStack spacing={3} p="0.1em 0.9em 0.9em 0.9em">
         <Button
-          onClick={() => handleFollowAuthor()}
+          onClick={() => handleFollowAuthor('follow')}
           w="100%"
           colorScheme={isFollowing ? 'gray' : 'teal'}
         >
           {isFollowing ? 'Unfollow' : 'Follow'}
         </Button>
-        <Text fontSize="md">
-          Looking to get into development? As a full-stack developer I guide you
-          on this journey and give you bite sized tips every single day
-        </Text>
+        <Text fontSize="md">{authorInfo._source.bio}</Text>
         <Flex flexDirection={'column'} justifyContent={'start'} w="100%">
           <InfoListItem heading="Location" text="Ho Chi Minh, Viet Nam" />
-          <InfoListItem
-            heading="Work"
-            text="Solution Architect at Daily Dev Tips"
-          />
-
+          <InfoListItem heading="Work" text={authorInfo._source.work} />
           <InfoListItem
             heading="Joined"
             text={moment(authorInfo._source.joinedDate).format('LL')}

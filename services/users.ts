@@ -138,23 +138,50 @@ const savedPosts = (userID: string, postID: string) => {
 }
 
 const followAuthor = (userID: string, authorID: string) => {
-  client.update<Document>({
-    index: 'users',
-    id: userID,
-    script: {
-      source:
-        'if (ctx._source.followings.contains(params.authorID)) { ctx._source.followings.remove(ctx._source.followings.indexOf(params.authorID)) } else {ctx._source.followings.add(params.authorID)}',
-      lang: 'painless',
-      params: {
-        authorID: authorID,
+  if (userID !== authorID) {
+    client.update<Document>({
+      index: 'users',
+      id: userID,
+      script: {
+        source: `if (ctx._source.followings.contains(params.authorID)) { 
+            ctx._source.followings.remove(ctx._source.followings.indexOf(params.authorID))
+           }
+           else {
+             ctx._source.followings.add(params.authorID)
+            }`,
+        lang: 'painless',
+        params: {
+          authorID: authorID,
+        },
       },
-    },
-  })
+    })
+  }
 }
 
 const getUsersInfoByIDList = async (idList: string[]) => {
   const result = await queryByIDList(idList)
   return JSON.parse(JSON.stringify(result)) as User[]
+}
+
+const editUserProfile = (
+  userID: string,
+  displayName: string,
+  email: string,
+  bio: string,
+  work: string,
+  education: string,
+) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    doc: {
+      displayName: displayName,
+      email: email,
+      bio: bio,
+      work: work,
+      education: education,
+    },
+  })
 }
 
 const searchUser = async (searchTerm: string) => {
@@ -183,5 +210,6 @@ export {
   getUsersInfoByIDList,
   followAuthor,
   getFollowingsOfUser,
+  editUserProfile,
   searchUser,
 }

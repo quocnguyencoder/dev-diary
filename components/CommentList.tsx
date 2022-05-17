@@ -5,9 +5,10 @@ import { User } from '@/interfaces/User'
 interface Props {
   commentList: Comment[]
   userList: User[]
+  updateFunction: () => void
 }
 
-const CommentList = ({ commentList, userList }: Props) => {
+const CommentList = ({ commentList, userList, updateFunction }: Props) => {
   return (
     <VStack align="left">
       {commentList.map((comment) => {
@@ -20,6 +21,7 @@ const CommentList = ({ commentList, userList }: Props) => {
               key={`cmt-${comment._id}`}
               userInfo={userInfo}
               comment={comment}
+              updateFunction={updateFunction}
             />
           )
         )

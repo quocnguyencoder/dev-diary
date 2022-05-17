@@ -31,7 +31,7 @@ const InteractButtons = ({ postID }: Props) => {
         alert('Something went wrong')
       }
     } else {
-      alert('Please login to comment')
+      alert(`Please login to ${action}`)
     }
   }
 

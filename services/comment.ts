@@ -29,4 +29,19 @@ const getCommentByPostID = async (postID: string) => {
   return result.hits.hits
 }
 
-export { createComment, getCommentByPostID }
+const likeComment = (commentID: string, userID: string) => {
+  client.update<Document>({
+    index: 'comments',
+    id: commentID,
+    script: {
+      source:
+        'if (ctx._source.likes.contains(params.liked)) { ctx._source.likes.remove(ctx._source.likes.indexOf(params.liked)) } else {ctx._source.likes.add(params.liked)}',
+      lang: 'painless',
+      params: {
+        liked: userID,
+      },
+    },
+  })
+}
+
+export { createComment, getCommentByPostID, likeComment }

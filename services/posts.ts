@@ -81,6 +81,21 @@ const createPost = async (data: PostSource) => {
   return response._id
 }
 
+const putCommentIDInPost = (postID: string, commentID: string) => {
+  client.update<Document>({
+    index: 'posts',
+    id: postID,
+    script: {
+      source:
+        'if (!ctx._source.comments.contains(params.comments)) {ctx._source.comments.add(params.comments)}',
+      lang: 'painless',
+      params: {
+        comments: commentID,
+      },
+    },
+  })
+}
+
 const likePost = (postID: string, userID: string) => {
   client.update<Document>({
     index: 'posts',
@@ -307,6 +322,7 @@ export {
   likePost,
   getAllUserPosts,
   getAmountOfLikedPostByPostID,
+  putCommentIDInPost,
   getAuthorRelatedPosts,
   getOthersRelatedPosts,
   searchPosts,
