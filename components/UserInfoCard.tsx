@@ -24,11 +24,11 @@ const UserInfoCard = ({ authorInfo }: Props) => {
   const [followings, setFollowings] = useState<string[]>([])
   const { data: session, status } = useSession()
 
-  const handleFollowAuthor = async () => {
+  const handleFollowAuthor = async (action: string) => {
     if (status === 'authenticated') {
       const res = await fetch(`/api/users`, {
         method: 'POST',
-        body: JSON.stringify({ authorID: authorInfo._id, action: 'follow' }),
+        body: JSON.stringify({ authorID: authorInfo._id, action: action }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -37,7 +37,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       if (res.status === 200) {
         // wait 1 seconds for data to fully be uploaded on the server
         setTimeout(() => {
-          getDataUser()
+          getUserData()
         }, 1000)
       } else {
         alert('Something went wrong')
@@ -60,11 +60,9 @@ const UserInfoCard = ({ authorInfo }: Props) => {
     }
   }, [session])
 
-
   useEffect(() => {
-    getDataUser()
-  }, [getDataUser])
-
+    getUserData()
+  }, [getUserData])
 
   const isFollowing =
     session && followings.indexOf(authorInfo._id) >= 0 ? true : false
@@ -101,7 +99,7 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       </HStack>
       <VStack spacing={3} p="0.1em 0.9em 0.9em 0.9em">
         <Button
-          onClick={() => handleFollowAuthor()}
+          onClick={() => handleFollowAuthor('follow')}
           w="100%"
           colorScheme={isFollowing ? 'gray' : 'teal'}
         >
