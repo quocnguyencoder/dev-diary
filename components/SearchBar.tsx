@@ -43,6 +43,7 @@ const SearchBar = () => {
           aria-label="Search database"
           icon={<SearchIcon />}
           onClick={() => gotoSearch()}
+          _focus={{ outline: 0 }}
         />
       </InputRightElement>
     </InputGroup>

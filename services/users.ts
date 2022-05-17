@@ -23,20 +23,12 @@ const queryByUsername = async (username: string) => {
 }
 
 const getUserByUserID = async (userID: string) => {
-  const result = await client.search<Document>({
+  const result = await client.get<Document>({
     index: 'users',
     _source_excludes: 'password',
-    query: {
-      bool: {
-        should: {
-          terms: {
-            _id: [userID],
-          },
-        },
-      },
-    },
+    id: userID,
   })
-  return JSON.parse(JSON.stringify(result.hits.hits[0])) as User
+  return JSON.parse(JSON.stringify(result)) as User
 }
 
 const getFollowingsOfUser = async (userID: string) => {
@@ -192,6 +184,20 @@ const editUserProfile = (
   })
 }
 
+const searchUser = async (searchTerm: string) => {
+  const results = await client.search<Document>({
+    index: 'users',
+    _source_excludes: 'password',
+    query: {
+      query_string: {
+        query: `${searchTerm}`,
+        fields: ['username^2', 'displayName'],
+      },
+    },
+  })
+  return JSON.parse(JSON.stringify(results.hits.hits)) as User[]
+}
+
 export {
   createUser,
   checkUserExists,
@@ -205,4 +211,5 @@ export {
   followAuthor,
   getFollowingsOfUser,
   editUserProfile,
+  searchUser,
 }

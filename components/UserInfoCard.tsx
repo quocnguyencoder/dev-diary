@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { useSession } from 'next-auth/react'
-import React, { useCallback, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import InfoListItem from './InfoListItem'
 import NextChakraLink from './NextChakraLink'
 import generateAvatar from '@/helpers/generateAvatar'
@@ -24,19 +24,24 @@ const UserInfoCard = ({ authorInfo }: Props) => {
   const [followings, setFollowings] = useState<string[]>([])
   const { data: session, status } = useSession()
 
-  const handleFollowAuthor = (action: string) => {
+  const handleFollowAuthor = async () => {
     if (status === 'authenticated') {
-      fetch(`/api/users`, {
+      const res = await fetch(`/api/users`, {
         method: 'POST',
-        body: JSON.stringify({ authorID: authorInfo._id, action: action }),
+        body: JSON.stringify({ authorID: authorInfo._id, action: 'follow' }),
         headers: {
           'Content-Type': 'application/json',
         },
       })
-      // wait 1 seconds for data to fully be uploaded on the server
-      setTimeout(() => {
-        getUserData()
-      }, 1000)
+
+      if (res.status === 200) {
+        // wait 1 seconds for data to fully be uploaded on the server
+        setTimeout(() => {
+          getDataUser()
+        }, 1000)
+      } else {
+        alert('Something went wrong')
+      }
     } else {
       alert(`Please login to ${action} ${authorInfo._source.displayName}`)
     }
@@ -55,14 +60,14 @@ const UserInfoCard = ({ authorInfo }: Props) => {
     }
   }, [session])
 
-  useLayoutEffect(() => {
-    getUserData()
-  }, [getUserData])
 
-  const hadFollowed = () => {
-    if (session && followings.indexOf(authorInfo._id) >= 0) return true
-    return false
-  }
+  useEffect(() => {
+    getDataUser()
+  }, [getDataUser])
+
+
+  const isFollowing =
+    session && followings.indexOf(authorInfo._id) >= 0 ? true : false
 
   return (
     <VStack
@@ -96,11 +101,11 @@ const UserInfoCard = ({ authorInfo }: Props) => {
       </HStack>
       <VStack spacing={3} p="0.1em 0.9em 0.9em 0.9em">
         <Button
-          onClick={() => handleFollowAuthor('follow')}
+          onClick={() => handleFollowAuthor()}
           w="100%"
-          colorScheme={'teal'}
+          colorScheme={isFollowing ? 'gray' : 'teal'}
         >
-          {hadFollowed() ? 'Unfollow' : 'Follow'}
+          {isFollowing ? 'Unfollow' : 'Follow'}
         </Button>
         <Text fontSize="md">{authorInfo._source.bio}</Text>
         <Flex flexDirection={'column'} justifyContent={'start'} w="100%">

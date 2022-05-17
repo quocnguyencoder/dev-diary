@@ -48,6 +48,7 @@ const SignUp = () => {
         joinedDate: moment().toISOString(),
         savedPosts: [],
         comments: [],
+        tags: [],
       }
       const sendData = await fetch('/api/signup', {
         method: 'POST',

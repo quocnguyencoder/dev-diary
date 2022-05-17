@@ -1,13 +1,19 @@
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
+import { SearchResult } from '@/interfaces/SearchResult'
+import { User } from '@/interfaces/User'
 import {
   countAuthorPostsBySlug,
   createPost,
   getAmountOfLikedPostByPostID,
-  getPostsBySearch,
+  searchPosts,
 } from '@/services/posts'
-import { updateUserPosts } from '@/services/users'
+import {
+  getUsersInfoByIDList,
+  searchUser,
+  updateUserPosts,
+} from '@/services/users'
 
 type Message = {
   content: string
@@ -35,7 +41,7 @@ const authenticated =
   //handle posts
 export default authenticated(async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Message | Post[] | Post>,
+  res: NextApiResponse<Message | Post[] | Post | SearchResult | User[]>,
 ) {
   const method = req.method
   try {
@@ -44,12 +50,19 @@ export default authenticated(async function handler(
         const query = req.query.q
         const filterBy = req.query.filter || '*'
         const orderBy = req.query.order || ''
-        const data = await getPostsBySearch(
-          `${query}`,
-          `${filterBy}`,
-          `${orderBy}`,
-        )
-        return res.status(200).json(data)
+        if (filterBy === 'People') {
+          const results = await searchUser(`${query}`)
+          return res.status(200).json(results)
+        } else {
+          const results = await searchPosts(
+            `${query}`,
+            `${filterBy}`,
+            `${orderBy}`,
+          )
+          const idList = results.map((post) => post._source.authorID)
+          const userList = await getUsersInfoByIDList(idList)
+          return res.status(200).json({ results: results, userList: userList })
+        }
       }
       case 'PUT': {
         const session = await getSession({ req })

@@ -12,7 +12,7 @@ const SortOptions = ({ sortBy, setSortBy }: Props) => {
     setSortBy(option)
   }
   return (
-    <HStack>
+    <HStack spacing={4}>
       {sortByOptions.map((option) => (
         <OptionButton
           key={option}

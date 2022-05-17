@@ -18,4 +18,5 @@ export interface UserSource {
   joinedDate: string
   savedPosts: string[]
   comments: string[]
+  tags: string[]
 }

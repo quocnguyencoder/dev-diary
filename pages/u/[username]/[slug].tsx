@@ -8,16 +8,30 @@ import RelatedPosts from '@/components/RelatedPosts'
 import UserInfoCard from '@/components/UserInfoCard'
 import { Post } from '@/interfaces/Post'
 import { User } from '@/interfaces/User'
-import { getPostBySlug, queryPostsBySameAuthor } from '@/services/posts'
+import {
+  getAuthorRelatedPosts,
+  getOthersRelatedPosts,
+  getPostBySlug,
+} from '@/services/posts'
 import { getUserByUserID } from '@/services/users'
 
 interface Props {
   postContent: Post
   author: User
-  postList: Post[]
+  authorRelatedPosts: Post[]
+  othersRelatedPosts: Post[]
 }
 
-const PostPage = ({ postContent, author, postList }: Props) => {
+const PostPage = ({
+  postContent,
+  author,
+  authorRelatedPosts,
+  othersRelatedPosts,
+}: Props) => {
+  const userRelatedPostsLinkColor = useColorModeValue('blue.600', 'blue.400')
+  const hasRelatedPosts = (result: Post[]) =>
+    result.length !== 0 ? true : false
+
   return (
     <Container maxW="7xl" pt="3" pb="3" display="flex" gap={3}>
       {/* Left-side contents */}
@@ -36,21 +50,29 @@ const PostPage = ({ postContent, author, postList }: Props) => {
       </VStack>
       {/* Right-side contents */}
       <Box w="28%" display={{ base: 'none', md: 'block' }}>
-        <VStack position={'sticky'} top={0}>
+        <VStack>
           <UserInfoCard authorInfo={author} />
-          <RelatedPosts
-            heading={
-              <>
-                More from{' '}
-                <NextChakraLink
-                  href={`/u/${author._source.username}`}
-                  text={author._source.displayName}
-                  color={useColorModeValue('blue.600', 'blue.400')}
-                />
-              </>
-            }
-            postList={postList}
-          />
+          {hasRelatedPosts(authorRelatedPosts) && (
+            <RelatedPosts
+              heading={
+                <>
+                  More from{' '}
+                  <NextChakraLink
+                    href={`/u/${author._source.username}`}
+                    text={author._source.displayName}
+                    color={userRelatedPostsLinkColor}
+                  />
+                </>
+              }
+              postList={authorRelatedPosts}
+            />
+          )}
+          {hasRelatedPosts(othersRelatedPosts) && (
+            <RelatedPosts
+              heading={'Maybe you like'}
+              postList={othersRelatedPosts}
+            />
+          )}
         </VStack>
       </Box>
     </Container>
@@ -62,14 +84,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   let postContent = {} as Post
   let author = {} as User
-  let postList = [] as Post[]
+  let authorRelatedPosts = [] as Post[]
+  let othersRelatedPosts = [] as Post[]
+
   try {
     // slug -> username => data
     postContent = await getPostBySlug(`${slug}`)
     author = await getUserByUserID(postContent._source.authorID)
-    postList = await queryPostsBySameAuthor(
-      author._source.posts.filter((post) => post !== postContent._id),
-    )
+    authorRelatedPosts = await getAuthorRelatedPosts(postContent)
+    othersRelatedPosts = await getOthersRelatedPosts(postContent)
   } catch (err) {
     console.error(err)
   }
@@ -79,7 +102,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       // will be passed to the page component as props
       postContent,
       author,
-      postList,
+      authorRelatedPosts,
+      othersRelatedPosts,
     },
   }
 }
