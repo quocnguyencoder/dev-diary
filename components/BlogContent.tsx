@@ -1,7 +1,9 @@
 import { Heading, Image, VStack } from '@chakra-ui/react'
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer'
+import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import EditPost from './EditPost'
 import BlogAuthor from '@/components/BlogAuthor'
 import BlogTags from '@/components/BlogTags'
 import { Post } from '@/interfaces/Post'
@@ -13,6 +15,7 @@ interface Props {
 }
 
 const BlogContent = ({ postContent, author }: Props) => {
+  const [edit, setEdit] = useState(false)
   return (
     <>
       <Image
@@ -29,19 +32,24 @@ const BlogContent = ({ postContent, author }: Props) => {
           date={postContent._source.publishedAt}
           id={postContent._source.authorID}
           username={author._source.username}
+          setEdit={setEdit}
         />
         <Heading as="h2" size="3xl">
           {postContent._source.title}
         </Heading>
         <BlogTags tags={postContent._source.tags} />
 
-        <ReactMarkdown
-          components={ChakraUIRenderer()}
-          remarkPlugins={[remarkGfm]}
-          skipHtml
-        >
-          {postContent._source.content}
-        </ReactMarkdown>
+        {!edit ? (
+          <ReactMarkdown
+            components={ChakraUIRenderer()}
+            remarkPlugins={[remarkGfm]}
+            skipHtml
+          >
+            {postContent._source.content}
+          </ReactMarkdown>
+        ) : (
+          <EditPost postContent={postContent} setEdit={setEdit} />
+        )}
       </VStack>
     </>
   )

@@ -313,6 +313,16 @@ const getTopPosts = async () => {
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
 
+const updatePostContent = (postID: string, postContent: string) => {
+  client.update<Document>({
+    index: 'posts',
+    id: postID,
+    doc: {
+      content: postContent,
+    },
+  })
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -328,4 +338,5 @@ export {
   searchPosts,
   getUserNewsFeed,
   getTopPosts,
+  updatePostContent,
 }

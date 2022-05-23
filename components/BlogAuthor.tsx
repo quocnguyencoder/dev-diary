@@ -6,15 +6,19 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import moment from 'moment'
+import { useSession } from 'next-auth/react'
 import React from 'react'
+import MoreActionButton from './MoreActionButton'
 import NextChakraLink from './NextChakraLink'
 import * as ROUTES from '@/constants/routes'
 import generateAvatar from '@/helpers/generateAvatar'
+
 interface BlogAuthorProps {
   date: string
   name: string
   id: string
   username: string
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const BlogAuthor: React.FC<BlogAuthorProps> = ({
@@ -22,11 +26,15 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
   name,
   id,
   username,
+  setEdit,
 }: BlogAuthorProps) => {
+  const { data: session } = useSession()
+  const owner = () => (session && session.id === id ? true : false)
+
   return (
     <HStack mt="2" spacing="2" display="flex" align="center">
       <Avatar maxW="40px" maxH="40px" name={name} src={generateAvatar(id)} />
-      <VStack align={'left'} spacing="-0.5">
+      <VStack align={'left'} spacing="-0.5" w="100%">
         <Text fontWeight="600">
           <NextChakraLink
             href={ROUTES.USER_PROFILE(username)}
@@ -39,6 +47,7 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
           'YYYY-MM-DDTHH:mm:ssZ',
         ).fromNow()})`}</Text>
       </VStack>
+      {owner() && <MoreActionButton setEdit={setEdit} />}
     </HStack>
   )
 }
