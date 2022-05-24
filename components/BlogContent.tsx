@@ -32,6 +32,7 @@ const BlogContent = ({ postContent, author }: Props) => {
           date={postContent._source.publishedAt}
           id={postContent._source.authorID}
           username={author._source.username}
+          postID={postContent._id}
           setEdit={setEdit}
         />
         <Heading as="h2" size="3xl">

@@ -18,7 +18,8 @@ interface BlogAuthorProps {
   name: string
   id: string
   username: string
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>
+  postID: string
+  setEdit: React.Dispatch<React.SetStateAction<boolean>> | undefined
 }
 
 export const BlogAuthor: React.FC<BlogAuthorProps> = ({
@@ -26,6 +27,7 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
   name,
   id,
   username,
+  postID,
   setEdit,
 }: BlogAuthorProps) => {
   const { data: session } = useSession()
@@ -47,7 +49,9 @@ export const BlogAuthor: React.FC<BlogAuthorProps> = ({
           'YYYY-MM-DDTHH:mm:ssZ',
         ).fromNow()})`}</Text>
       </VStack>
-      {owner() && <MoreActionButton setEdit={setEdit} />}
+      {setEdit && owner() && (
+        <MoreActionButton postID={postID} authorID={id} setEdit={setEdit} />
+      )}
     </HStack>
   )
 }

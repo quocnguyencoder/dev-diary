@@ -3,15 +3,20 @@ import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
 import { SearchResult } from '@/interfaces/SearchResult'
 import { User } from '@/interfaces/User'
+import { deleteComments, getCommentByPostID } from '@/services/comment'
 import {
   countAuthorPostsBySlug,
   createPost,
+  deletePost,
   getAmountOfLikedPostByPostID,
   searchPosts,
   updatePostContent,
 } from '@/services/posts'
 import {
   getUsersInfoByIDList,
+  removeUserComments,
+  removeUserPosts,
+  removeUserSavedPost,
   searchUser,
   updateUserPosts,
 } from '@/services/users'
@@ -90,7 +95,7 @@ export default authenticated(async function handler(
       case 'DELETE': {
         const session = await getSession({ req })
         if (session) {
-          const authorID = req.body.authorID
+          const authorID = req.body.authorID as string
           if (session.id === authorID) {
             const postID = req.body.postID as string
             const postContent = req.body.postContent as string
@@ -99,7 +104,13 @@ export default authenticated(async function handler(
               updatePostContent(postID, postContent)
               return res.status(200).json({ content: 'updated successfully' })
             } else {
-              // deletePost
+              const commentList = await getCommentByPostID(postID)
+              const commentIDList = commentList.map((comment) => comment._id)
+              commentIDList.map((commentID) => removeUserComments(commentID))
+              removeUserSavedPost(postID)
+              removeUserPosts(authorID, postID)
+              deleteComments(commentIDList)
+              deletePost(postID)
               return res.status(200).json({ content: 'deleted successfully' })
             }
           }

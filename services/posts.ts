@@ -86,8 +86,9 @@ const putCommentIDInPost = (postID: string, commentID: string) => {
     index: 'posts',
     id: postID,
     script: {
-      source:
-        'if (!ctx._source.comments.contains(params.comments)) {ctx._source.comments.add(params.comments)}',
+      source: `if (!ctx._source.comments.contains(params.comments)) {
+          ctx._source.comments.add(params.comments)
+        }`,
       lang: 'painless',
       params: {
         comments: commentID,
@@ -323,6 +324,13 @@ const updatePostContent = (postID: string, postContent: string) => {
   })
 }
 
+const deletePost = (postID: string) => {
+  client.delete({
+    index: 'posts',
+    id: postID,
+  })
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -339,4 +347,5 @@ export {
   getUserNewsFeed,
   getTopPosts,
   updatePostContent,
+  deletePost,
 }
