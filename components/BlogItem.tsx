@@ -43,6 +43,8 @@ const BlogItem = ({ post, userInfo }: Props) => {
         date={post._source.publishedAt}
         id={post._source.authorID}
         username={username}
+        postID={post._id}
+        setEdit={undefined}
       />
       <VStack align={'left'} p={'0 7%'}>
         <Heading fontSize="4xl">

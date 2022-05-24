@@ -86,8 +86,9 @@ const putCommentIDInPost = (postID: string, commentID: string) => {
     index: 'posts',
     id: postID,
     script: {
-      source:
-        'if (!ctx._source.comments.contains(params.comments)) {ctx._source.comments.add(params.comments)}',
+      source: `if (!ctx._source.comments.contains(params.comments)) {
+          ctx._source.comments.add(params.comments)
+        }`,
       lang: 'painless',
       params: {
         comments: commentID,
@@ -313,6 +314,23 @@ const getTopPosts = async () => {
   return JSON.parse(JSON.stringify(result.hits.hits)) as Post[]
 }
 
+const updatePostContent = (postID: string, postContent: string) => {
+  client.update<Document>({
+    index: 'posts',
+    id: postID,
+    doc: {
+      content: postContent,
+    },
+  })
+}
+
+const deletePost = (postID: string) => {
+  client.delete({
+    index: 'posts',
+    id: postID,
+  })
+}
+
 export {
   getLatestPosts,
   getPostBySlug,
@@ -328,4 +346,6 @@ export {
   searchPosts,
   getUserNewsFeed,
   getTopPosts,
+  updatePostContent,
+  deletePost,
 }

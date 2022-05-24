@@ -44,6 +44,26 @@ const likeComment = async (commentID: string, action: string) => {
   })
 }
 
+const updatedPostContent = async (
+  postID: string,
+  authorID: string,
+  postContent: string,
+  action: string,
+) => {
+  return await fetch(`/api/posts`, {
+    method: 'DELETE',
+    body: JSON.stringify({
+      postID: postID,
+      authorID: authorID,
+      postContent: postContent,
+      action: action,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
 const isSuccess = (response: Response, expectedStatus: number) =>
   response.status === expectedStatus ? true : false
 
@@ -54,4 +74,5 @@ export {
   isSuccess,
   editUserProfile,
   likeComment,
+  updatedPostContent,
 }

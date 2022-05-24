@@ -3,14 +3,20 @@ import { getSession } from 'next-auth/react'
 import { Post, PostSource } from '@/interfaces/Post'
 import { SearchResult } from '@/interfaces/SearchResult'
 import { User } from '@/interfaces/User'
+import { deleteComments, getCommentByPostID } from '@/services/comment'
 import {
   countAuthorPostsBySlug,
   createPost,
+  deletePost,
   getAmountOfLikedPostByPostID,
   searchPosts,
+  updatePostContent,
 } from '@/services/posts'
 import {
   getUsersInfoByIDList,
+  removeUserComments,
+  removeUserPosts,
+  removeUserSavedPost,
   searchUser,
   updateUserPosts,
 } from '@/services/users'
@@ -38,7 +44,7 @@ const authenticated =
     }
   }
 
-  //handle posts
+//handle posts
 export default authenticated(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Message | Post[] | Post | SearchResult | User[]>,
@@ -85,6 +91,31 @@ export default authenticated(async function handler(
         const postID = req.body.postID
         const likeArray = await getAmountOfLikedPostByPostID(postID)
         return res.status(200).json(likeArray)
+      }
+      case 'DELETE': {
+        const session = await getSession({ req })
+        if (session) {
+          const authorID = req.body.authorID as string
+          if (session.id === authorID) {
+            const postID = req.body.postID as string
+            const postContent = req.body.postContent as string
+            const action = req.body.action
+            if (action === 'Update') {
+              updatePostContent(postID, postContent)
+              return res.status(200).json({ content: 'updated successfully' })
+            } else {
+              const commentList = await getCommentByPostID(postID)
+              const commentIDList = commentList.map((comment) => comment._id)
+              commentIDList.map((commentID) => removeUserComments(commentID))
+              removeUserSavedPost(postID)
+              removeUserPosts(authorID, postID)
+              deleteComments(commentIDList)
+              deletePost(postID)
+              return res.status(200).json({ content: 'deleted successfully' })
+            }
+          }
+        }
+        return res.status(401).json({ content: 'request failed' })
       }
     }
   } catch (err) {

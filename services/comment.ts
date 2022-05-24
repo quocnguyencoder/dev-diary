@@ -5,7 +5,6 @@ const createComment = async (data: CommentSource) => {
   const response = await client.index({ index: 'comments', document: data })
   return response._id
 }
-// const getCommentByPostID = async (postID: string) => {}
 
 const getCommentByPostID = async (postID: string) => {
   const result = await client.search<Document>({
@@ -34,8 +33,12 @@ const likeComment = (commentID: string, userID: string) => {
     index: 'comments',
     id: commentID,
     script: {
-      source:
-        'if (ctx._source.likes.contains(params.liked)) { ctx._source.likes.remove(ctx._source.likes.indexOf(params.liked)) } else {ctx._source.likes.add(params.liked)}',
+      source: `if (ctx._source.likes.contains(params.liked)) {
+         ctx._source.likes.remove(ctx._source.likes.indexOf(params.liked)) 
+        }
+         else {
+          ctx._source.likes.add(params.liked)
+        }`,
       lang: 'painless',
       params: {
         liked: userID,
@@ -44,4 +47,19 @@ const likeComment = (commentID: string, userID: string) => {
   })
 }
 
-export { createComment, getCommentByPostID, likeComment }
+const deleteComments = (commentIDList: string[]) => {
+  client.deleteByQuery({
+    index: 'comments',
+    query: {
+      bool: {
+        should: {
+          terms: {
+            _id: commentIDList,
+          },
+        },
+      },
+    },
+  })
+}
+
+export { createComment, getCommentByPostID, likeComment, deleteComments }

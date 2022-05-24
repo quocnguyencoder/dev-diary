@@ -107,6 +107,73 @@ const updateUserPosts = async (userID: string, postID: string) => {
   return result
 }
 
+const removeUserPosts = (userID: string, postID: string) => {
+  client.update<Document>({
+    index: 'users',
+    id: userID,
+    script: {
+      source: `if (ctx._source.posts.contains(params.postID)) { 
+          ctx._source.posts.remove(ctx._source.posts.indexOf(params.postID))
+         }`,
+      lang: 'painless',
+      params: {
+        postID: postID,
+      },
+    },
+  })
+}
+
+const removeUserComments = async (commentID: string) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_excludes: 'password',
+    query: {
+      bool: {
+        must: [
+          {
+            match: {
+              comments: `${commentID}`,
+            },
+          },
+        ],
+      },
+    },
+  })
+
+  await client.update<Document>({
+    index: 'users',
+    id: result.hits.hits[0]._id,
+    script: {
+      source: `if (ctx._source.comments.contains(params.commentID)) {
+        ctx._source.comments.remove(ctx._source.comments.indexOf(params.commentID))
+      }`,
+      lang: 'painless',
+      params: {
+        commentID: commentID,
+      },
+    },
+  })
+}
+
+const removeUserSavedPost = async (postID: string) => {
+  const result = await client.search<Document>({
+    index: 'users',
+    _source_excludes: 'password',
+    query: {
+      bool: {
+        must: [
+          {
+            match: {
+              savedPosts: `${postID}`,
+            },
+          },
+        ],
+      },
+    },
+  })
+  result.hits.hits.map((hit) => savedPosts(hit._id, postID))
+}
+
 const updateUserComments = async (userID: string, commentID: string) => {
   const result = await client.update<Document>({
     index: 'users',
@@ -127,8 +194,12 @@ const savedPosts = (userID: string, postID: string) => {
     index: 'users',
     id: userID,
     script: {
-      source:
-        'if (ctx._source.savedPosts.contains(params.postID)) { ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID)) } else {ctx._source.savedPosts.add(params.postID)}',
+      source: `if (ctx._source.savedPosts.contains(params.postID)) { 
+          ctx._source.savedPosts.remove(ctx._source.savedPosts.indexOf(params.postID))
+         } 
+         else {
+           ctx._source.savedPosts.add(params.postID)
+          }`,
       lang: 'painless',
       params: {
         postID: postID,
@@ -212,4 +283,7 @@ export {
   getFollowingsOfUser,
   editUserProfile,
   searchUser,
+  removeUserPosts,
+  removeUserComments,
+  removeUserSavedPost,
 }
