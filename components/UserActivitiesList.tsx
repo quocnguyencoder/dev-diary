@@ -17,6 +17,7 @@ const UserActivitiesList = ({ postsNum, commentNum }: Props) => {
       spacing={2}
       w="30%"
       h="100%"
+      display={{ base: 'none', md: 'block' }}
     >
       <ListItem>
         <ListIcon as={RiFileList3Line} boxSize="1.5em" />

@@ -12,9 +12,10 @@ import { getUserByUserID, getUsersInfoByIDList } from '@/services/users'
 interface Props {
   userInfo: User
   followings: User[]
+  status: number
 }
 
-const Home = ({ userInfo, followings }: Props) => {
+const Home = ({ userInfo, followings, status }: Props) => {
   const { data: session } = useSession()
   return (
     <Container maxW="85vw" p={'1em 0'} display="flex" gap={2}>
@@ -59,7 +60,7 @@ const Home = ({ userInfo, followings }: Props) => {
       </VStack>
 
       <Box flex={1}>
-        <NewsFeedSection userInfo={userInfo} />
+        {status !== 500 && <NewsFeedSection userInfo={userInfo} />}
       </Box>
       <Box
         bgColor="yellow"
@@ -78,12 +79,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const session = await getSession({ req })
   let userInfo = {} as User
   let followings = [] as User[]
+  let status = 200
   if (session) {
     try {
       userInfo = await getUserByUserID(session.id as string)
       followings = await getUsersInfoByIDList(userInfo._source.followings)
     } catch (err) {
       console.error(err)
+      status = 500
     }
   }
 
@@ -91,6 +94,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     props: {
       userInfo,
       followings,
+      status,
     },
   }
 }
