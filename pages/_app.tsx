@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider>
       <Head>
-        <link rel="icon" href="/favicon.svg" />
+        <link rel="icon" href="/icon.ico" />
       </Head>
       <DefaultSeo
         defaultTitle="DevDiary - Share your dev stories"

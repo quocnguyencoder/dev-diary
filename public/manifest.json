@@ -1,0 +1,22 @@
+{
+  "name": "Dev Diary",
+  "short_name": "Dev Diary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+
+    {
+      "src": "/icon-500x500.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#34ebb7",
+  "background_color": "#34ebd6",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
