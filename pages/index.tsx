@@ -29,11 +29,11 @@ const Home = ({ userInfo, followings, status }: Props) => {
           description: 'Technical blog webapp',
           images: [
             {
-              url: 'https://dev-diary-nu.vercel.app/logo.svg',
+              url: 'https://dev-diary-nu.vercel.app/icon-500x500.png',
               width: 800,
               height: 600,
               alt: 'Og Image Alt',
-              type: 'image/svg',
+              type: 'image/png',
             },
           ],
         }}

@@ -49,7 +49,7 @@ const PostPage = ({
               width: 800,
               height: 600,
               alt: 'Og Image Alt',
-              type: 'image/svg',
+              type: 'image/png',
             },
           ],
         }}
