@@ -1,5 +1,7 @@
 # Dev Diary - Share your dev stories
 
+![Dev-Diary-full-logo](https://user-images.githubusercontent.com/55438729/179899593-f85c136c-a1a4-46ca-be45-37389eaf5613.jpeg)
+
 This is a blog project using [Next.js](https://nextjs.org/), [ChakraUI](https://chakra-ui.com/) and [Elastic Search](https://www.elastic.co/elasticsearch/). You can visit the project on [this website](https://dev-diary-nu.vercel.app/)
 
 ## Getting Started
