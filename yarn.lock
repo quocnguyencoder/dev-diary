@@ -4748,10 +4748,10 @@ net@^1.0.2:
   resolved "https://registry.yarnpkg.com/net/-/net-1.0.2.tgz#d1757ec9a7fb2371d83cf4755ce3e27e10829388"
   integrity sha1-0XV+yaf7I3HYPPR1XOPifhCCk4g=
 
-next-auth@^4.3.3:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.3.3.tgz#5ff892e73648a0f33c2af0e9d7cafda729f63ae7"
-  integrity sha512-bUs+oOOPT18Pq/+4v9q4PA/DGoVoAX6jwY7RTfE/akFXwlny+y/mNS6lPSUwpqcHjljqBaq34PQA3+01SdOOPw==
+next-auth@^4.10.1:
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/next-auth/-/next-auth-4.10.1.tgz#33b29265d12287bb2f6d267c8d415a407c27f0e9"
+  integrity sha512-F00vtwBdyMIIJ8IORHOAOHjVGTDEhhm9+HpB2BQ8r40WtGxqToWWLN7Z+2ZW/z2RFlo3zhcuAtUCPUzVJxtZwQ==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@panva/hkdf" "^1.0.1"

@@ -56,7 +56,9 @@ const Login = () => {
     >
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
-          <Heading fontSize={'4xl'}>Sign in to your account</Heading>
+          <Heading fontSize={'4xl'} textAlign="center">
+            Sign in to your account
+          </Heading>
           <Text fontSize={'lg'} color={'gray.600'}>
             to enjoy all of our cool <Link color={'blue.400'}>features</Link> ✌️
           </Text>
@@ -101,6 +103,14 @@ const Login = () => {
               >
                 Sign in
               </Button>
+            </Stack>
+            <Stack pt={6}>
+              <Text align={'center'}>
+                {`Don't have an account? `}
+                <Link color={'blue.400'} href="/signup">
+                  Sign up
+                </Link>
+              </Text>
             </Stack>
           </Stack>
         </Box>

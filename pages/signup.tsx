@@ -174,7 +174,7 @@ const SignUp = () => {
             <Stack pt={6}>
               <Text align={'center'}>
                 Already a user?{' '}
-                <Link color={'blue.400'} href="/">
+                <Link color={'blue.400'} href="/login">
                   Log in
                 </Link>
               </Text>
