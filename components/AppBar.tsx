@@ -100,18 +100,33 @@ export default function AppBar() {
                 </Menu>
               </>
             ) : (
-              <HStack spacing={5} display={{ base: 'none', md: 'block' }}>
-                <Button variant="link">
+              <HStack spacing={5}>
+                <Button variant="link" display={{ base: 'none', md: 'block' }}>
                   <NextChakraLink
                     href="/login"
                     text="Login"
                     color={linkColor}
                   />
                 </Button>
-                <Button colorScheme="teal" variant="outline">
+                <Button
+                  colorScheme="teal"
+                  variant="outline"
+                  display={{ base: 'none', md: 'block' }}
+                >
                   <NextChakraLink
                     href="/signup"
                     text="Create account"
+                    color={linkColor}
+                  />
+                </Button>
+                <Button
+                  colorScheme="teal"
+                  variant="outline"
+                  display={{ base: 'block', md: 'none' }}
+                >
+                  <NextChakraLink
+                    href="/login"
+                    text="Login"
                     color={linkColor}
                   />
                 </Button>
