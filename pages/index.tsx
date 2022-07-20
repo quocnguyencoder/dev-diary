@@ -59,16 +59,10 @@ const Home = ({ userInfo, followings, status }: Props) => {
         )}
       </VStack>
 
-      <Box flex={1}>
+      <Box flex={1} minH="80vh" maxWidth="85vw">
         {status !== 500 && <NewsFeedSection userInfo={userInfo} />}
       </Box>
-      <Box
-        bgColor="yellow"
-        w="25%"
-        h="10vh"
-        display={{ base: 'none', md: 'block' }}
-        visibility="hidden"
-      ></Box>
+      <Box minW="20%" h="10vh" display={{ base: 'none', md: 'flex' }}></Box>
     </Container>
   )
 }
