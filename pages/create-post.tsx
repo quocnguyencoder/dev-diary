@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   Flex,
+  Grid,
   HStack,
   IconButton,
   Input,
@@ -10,6 +11,7 @@ import {
   TagCloseButton,
   TagLabel,
   Textarea,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { useSession } from 'next-auth/react'
@@ -93,18 +95,18 @@ const CreatePost = () => {
       }
     }
   }
-
+  const panelBackground = useColorModeValue('white', 'gray.900')
   return isAuthenticated ? (
     <>
       <Container maxW="container.lg">
         <Box
-          bgColor={'gray.100'}
+          bgColor={panelBackground}
           marginTop={'1%'}
           borderRadius={'15px'}
           p={'5%'}
         >
           <Flex direction="column">
-            <Button colorScheme="teal" variant="outline" maxW={'30%'}>
+            <Button colorScheme="teal" variant="outline">
               Add a cover image
             </Button>
             <Input
@@ -132,7 +134,10 @@ const CreatePost = () => {
               />
             </Flex>
           </Flex>
-          <HStack spacing={2}>
+          <Grid
+            templateColumns={{ base: 'repeat(5, 1fr)', md: 'repeat(10, 1fr)' }}
+            gap={2}
+          >
             <IconButton
               aria-label="bold"
               size="lg"
@@ -183,7 +188,7 @@ const CreatePost = () => {
               size="lg"
               icon={<BiImage fontSize="1.5rem" />}
             />
-          </HStack>
+          </Grid>
           <Box>
             <Textarea
               variant="unstyled"
@@ -196,7 +201,7 @@ const CreatePost = () => {
             />
           </Box>
         </Box>
-        <HStack spacing={2} paddingTop="2%">
+        <HStack spacing={2} pt="2%" pb="3">
           <Button
             colorScheme="blue"
             size="md"
