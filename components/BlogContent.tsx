@@ -35,7 +35,7 @@ const BlogContent = ({ postContent, author }: Props) => {
           postID={postContent._id}
           setEdit={setEdit}
         />
-        <Heading as="h2" size="3xl">
+        <Heading as="h2" fontSize={{ base: 'xl', md: '3xl' }}>
           {postContent._source.title}
         </Heading>
         <BlogTags tags={postContent._source.tags} />

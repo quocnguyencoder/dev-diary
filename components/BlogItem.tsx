@@ -47,7 +47,7 @@ const BlogItem = ({ post, userInfo }: Props) => {
         setEdit={undefined}
       />
       <VStack align={'left'} p={'0 7%'}>
-        <Heading fontSize="4xl">
+        <Heading as="h2" fontSize={{ base: 'xl', md: '3xl' }}>
           <NextChakraLink
             href={`/u/${post._source.slug}`}
             text={post._source.title}
