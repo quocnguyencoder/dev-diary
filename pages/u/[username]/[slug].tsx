@@ -70,6 +70,7 @@ const PostPage = ({
           borderRadius={'10'}
           boxShadow={'0 0 1px'}
           flex={1}
+          maxW="90vw"
         >
           <BlogContent postContent={postContent} author={author} />
           <CommentSection postID={postContent._id} />
